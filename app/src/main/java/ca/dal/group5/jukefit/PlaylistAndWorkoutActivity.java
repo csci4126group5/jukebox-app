@@ -3,21 +3,20 @@ package ca.dal.group5.jukefit;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.Bundle;
+import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.os.Bundle;
 import android.view.View;
-import android.os.Environment;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import java.io.File;
 
-public class AddSongsActivity extends AppCompatActivity {
+public class PlaylistAndWorkoutActivity extends AppCompatActivity {
 
     public String fullPath;
     File file;
@@ -25,24 +24,22 @@ public class AddSongsActivity extends AppCompatActivity {
     private String[] FilePathStrings;
     private String[] FileNameStrings;
     ListView listview;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_songs);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabAddSongs);
+        setContentView(R.layout.activity_playlist_and_workout);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabAdd);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(AddSongsActivity.this, PlaylistAndWorkoutActivity.class);
+                Intent intent = new Intent(PlaylistAndWorkoutActivity.this, AddSongsActivity.class);
                 finish();
                 startActivity(intent);
             }
         });
-        ActivityCompat.requestPermissions(AddSongsActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
-        ActivityCompat.requestPermissions(AddSongsActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+        ActivityCompat.requestPermissions(PlaylistAndWorkoutActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+        ActivityCompat.requestPermissions(PlaylistAndWorkoutActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
 
         if (!Environment.getExternalStorageState().equals(
                 Environment.MEDIA_MOUNTED)) {
@@ -93,7 +90,7 @@ public class AddSongsActivity extends AppCompatActivity {
         }
 
         listview = (ListView)findViewById(R.id.SongListView);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.songlistitem, R.id.SongName, FileNameStrings);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.group_song_list, R.id.SongName, FileNameStrings);
         listview.setAdapter(adapter);
         listview.setItemsCanFocus(false);
         listview.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
