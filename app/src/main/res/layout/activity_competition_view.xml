@@ -29,17 +29,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1.2">
+
         <TextView
             android:id="@+id/pace"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:textSize="30dp"
-            android:text="Walk atleast 10000 steps each day "
-            android:textAlignment="center"
-            android:textStyle="bold"
-            android:lines="2"
             android:layout_weight="0.70"
-            android:gravity="center_vertical"/>
+            android:gravity="center_vertical"
+            android:lines="2"
+            android:text="GOAL: Walk atleast 10000 steps each day "
+            android:textAlignment="center"
+            android:textSize="30dp"
+            android:textStyle="bold" />
     </LinearLayout>
     <!--<View
         android:layout_height="2dp"
@@ -69,15 +70,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1">
+
         <TextView
             android:id="@+id/remainingSteps"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:textSize="20dp"
-            android:textAlignment="center"
-            android:textStyle="bold"
+            android:layout_height="95dp"
+            android:gravity="center_vertical"
             android:lines="5"
-            android:gravity="center_vertical"/>
+            android:textAlignment="center"
+            android:textSize="25dp"
+            android:textStyle="bold" />
     </LinearLayout>
     <View
         android:layout_height="2dp"
@@ -106,9 +108,11 @@
             android:layout_weight="3"
             android:gravity="center_vertical"
             android:lines="2"
+            android:textAlignment="center"
             android:textAllCaps="true"
             android:textSize="20dp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:text="Shape of You" />
 
     </LinearLayout>
 </LinearLayout>

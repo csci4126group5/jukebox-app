@@ -38,10 +38,10 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
     private Sensor mSensor;
     private boolean isSensorPresent = false;
     private TextView mStepsSinceReboot;
-    public String Steps;
+    public static String Steps;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_playlist_and_workout);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabGroup);
@@ -128,7 +128,6 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
 
 
         mStepsSinceReboot = (TextView) findViewById(R.id.stepCount);
-        Steps = String.valueOf((mStepsSinceReboot));
         mSensorManager = (SensorManager) this.getSystemService(Context.SENSOR_SERVICE);
         if (mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER) != null) {
             mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
@@ -161,6 +160,7 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
         mStepsSinceReboot.setText(String.valueOf(event.values[0]).substring(0,String.valueOf(event.values[0]).length() - 2));
         ProgressBar PBar = (ProgressBar) findViewById(determinateBar);
         int NumSteps = Integer.valueOf(mStepsSinceReboot.getText().toString());
+        Steps = mStepsSinceReboot.getText().toString();
         int Percentage = Integer.valueOf(NumSteps/100);
         PBar.setProgress(Percentage);
 

@@ -9,6 +9,7 @@ import java.util.Random;
 import ca.dal.group5.jukefit.Model.Group;
 import ca.dal.group5.jukefit.Model.Member;
 import ca.dal.group5.jukefit.Model.Song;
+import ca.dal.group5.jukefit.PlaylistAndWorkoutActivity;
 
 /**
  * Created by lockhart on 2017-06-12.
@@ -18,16 +19,21 @@ public class MockAPI implements APISpec {
 
     public List <String> playerNames;
     public List <String> playerInfo;
+    public int [] Scores;
     public List<Member> mockMembers(int n) {
         List<Member> members = new ArrayList<Member>();
+        Scores = new int [n];
         Random r = new Random();
         int Low = 0;
         int High = 10000;
         playerInfo = new ArrayList<>();
+        PlaylistAndWorkoutActivity PWAObj = new PlaylistAndWorkoutActivity();
+        playerInfo.add("YOU"+"                                                 "+PWAObj.Steps);
         for (int i = 1; i < n; i++) {
             int Result = r.nextInt(High-Low) + Low;
             members.add(new Member("Player " + i, "DEVICE_ID_" + i, Result));
             playerInfo.add("Player " + i+"                                       "+Result);
+            Scores[i] = Result;
         }
         return members;
     }
