@@ -15,12 +15,23 @@ import ca.dal.group5.jukefit.Model.Song;
 
 public class MockAPI implements APISpec {
 
+    public int n;
+    public List <String> playerNames;
     List<Member> mockMembers(int n) {
         List<Member> members = new ArrayList<Member>();
-        for (int i = 0; i < n; i++) {
+        for (int i = 1; i < n; i++) {
             members.add(new Member("Player " + i, "DEVICE_ID_" + i, 0));
         }
         return members;
+    }
+
+    public List <String> GetPlayerNames() {
+
+        playerNames = new ArrayList <String> ();
+        for (int i = 1; i < n; i++) {
+            playerNames.add("Player " + i);
+        }
+        return playerNames;
     }
 
     @Override
