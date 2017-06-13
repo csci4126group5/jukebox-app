@@ -32,7 +32,7 @@ public class Member {
         this.deviceID = deviceID;
     }
 
-    public int getScore() {
+    public int getScore(String name) {
         return score;
     }
 

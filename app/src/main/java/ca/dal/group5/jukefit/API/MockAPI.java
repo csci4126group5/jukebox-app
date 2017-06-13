@@ -17,25 +17,21 @@ import ca.dal.group5.jukefit.Model.Song;
 public class MockAPI implements APISpec {
 
     public List <String> playerNames;
+    public List <String> playerInfo;
     public List<Member> mockMembers(int n) {
         List<Member> members = new ArrayList<Member>();
+        Random r = new Random();
+        int Low = 0;
+        int High = 10000;
+        playerInfo = new ArrayList<>();
         for (int i = 1; i < n; i++) {
-            members.add(new Member("Player " + i, "DEVICE_ID_" + i, 0));
+            int Result = r.nextInt(High-Low) + Low;
+            members.add(new Member("Player " + i, "DEVICE_ID_" + i, Result));
+            playerInfo.add("Player " + i+"                                       "+Result);
         }
         return members;
     }
 
-    public List <String> GetPlayerNames(int n) {
-        Random r = new Random();
-        int Low = 0;
-        int High = 100;
-        playerNames = new ArrayList <String> ();
-        for (int i = 1; i < n; i++) {
-            int Result = r.nextInt(High-Low) + Low;
-            playerNames.add("Player " + i);
-        }
-        return playerNames;
-    }
 
     @Override
     public Group createGroup() {

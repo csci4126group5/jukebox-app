@@ -19,11 +19,11 @@ public class CompetitionView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_competition_view);
         MockAPI objMockAPI = new MockAPI();
+        objMockAPI.mockMembers(10);
         listview = (ListView)findViewById(R.id.playerProgress);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.playerlistitem, R.id.playerName, objMockAPI.GetPlayerNames(10));
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.playerlistitem, R.id.playerName, objMockAPI.playerInfo);
         listview.setAdapter(adapter);
         listview.setItemsCanFocus(false);
         listview.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-
     }
 }
