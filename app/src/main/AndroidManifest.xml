@@ -24,6 +24,7 @@
         </activity>
         <activity android:name=".Group_Playlist" />
         <activity android:name=".PlaylistAndWorkoutActivity" android:label="My Gang"></activity>
+        <activity android:name=".CompetitionView" android:label="My Gang"></activity>
     </application>
 
 </manifest>

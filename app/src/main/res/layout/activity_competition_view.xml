@@ -15,6 +15,7 @@
     android:weightSum="4"
     android:padding="5dp">
     <ListView
+        android:id="@+id/playerProgress"
         android:layout_width="368dp"
         android:layout_height="200dp"
         tools:layout_editor_absoluteX="8dp"

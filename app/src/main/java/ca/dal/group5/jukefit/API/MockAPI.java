@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 import ca.dal.group5.jukefit.Model.Group;
 import ca.dal.group5.jukefit.Model.Member;
@@ -15,9 +16,8 @@ import ca.dal.group5.jukefit.Model.Song;
 
 public class MockAPI implements APISpec {
 
-    public int n;
     public List <String> playerNames;
-    List<Member> mockMembers(int n) {
+    public List<Member> mockMembers(int n) {
         List<Member> members = new ArrayList<Member>();
         for (int i = 1; i < n; i++) {
             members.add(new Member("Player " + i, "DEVICE_ID_" + i, 0));
@@ -25,10 +25,13 @@ public class MockAPI implements APISpec {
         return members;
     }
 
-    public List <String> GetPlayerNames() {
-
+    public List <String> GetPlayerNames(int n) {
+        Random r = new Random();
+        int Low = 0;
+        int High = 100;
         playerNames = new ArrayList <String> ();
         for (int i = 1; i < n; i++) {
+            int Result = r.nextInt(High-Low) + Low;
             playerNames.add("Player " + i);
         }
         return playerNames;
