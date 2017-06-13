@@ -1,7 +1,10 @@
 package ca.dal.group5.jukefit;
 
+import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -21,5 +24,6 @@ public class CompetitionView extends AppCompatActivity {
         listview.setAdapter(adapter);
         listview.setItemsCanFocus(false);
         listview.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+
     }
 }

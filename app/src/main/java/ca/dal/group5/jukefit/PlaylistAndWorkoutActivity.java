@@ -44,6 +44,15 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_playlist_and_workout);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabGroup);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(PlaylistAndWorkoutActivity.this, CompetitionView.class);
+                finish();
+                startActivity(intent);
+            }
+        });
         /*FloatingActionButton fabAdd = (FloatingActionButton) findViewById(R.id.fabAdd);
         fabAdd.setOnClickListener(new View.OnClickListener() {
             @Override
