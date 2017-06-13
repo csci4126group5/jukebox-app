@@ -17,10 +17,13 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+
+import static ca.dal.group5.jukefit.R.id.determinateBar;
 
 
 public class PlaylistAndWorkoutActivity extends AppCompatActivity implements SensorEventListener {
@@ -114,7 +117,7 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
         listview.setItemsCanFocus(false);
         listview.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 
-        
+
         mStepsSinceReboot = (TextView) findViewById(R.id.StepsCount);
         Steps = String.valueOf((mStepsSinceReboot));
         mSensorManager = (SensorManager) this.getSystemService(Context.SENSOR_SERVICE);
@@ -147,6 +150,10 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
     @Override
     public void onSensorChanged(SensorEvent event) {
         mStepsSinceReboot.setText(String.valueOf(event.values[0]).substring(0,String.valueOf(event.values[0]).length() - 2));
+        ProgressBar PBar = (ProgressBar) findViewById(determinateBar);
+        int NumSteps = Integer.valueOf(mStepsSinceReboot.getText().toString());
+        int Percentage = Integer.valueOf(NumSteps/100);
+        PBar.setProgress(Percentage);
 
     }
 
