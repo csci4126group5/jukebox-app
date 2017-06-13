@@ -44,7 +44,7 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_playlist_and_workout);
-        FloatingActionButton fabAdd = (FloatingActionButton) findViewById(R.id.fabAdd);
+        /*FloatingActionButton fabAdd = (FloatingActionButton) findViewById(R.id.fabAdd);
         fabAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -115,10 +115,10 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.group_song_list, R.id.SongName, FileNameStrings);
         listview.setAdapter(adapter);
         listview.setItemsCanFocus(false);
-        listview.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+        listview.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);*/
 
 
-        mStepsSinceReboot = (TextView) findViewById(R.id.StepsCount);
+        mStepsSinceReboot = (TextView) findViewById(R.id.stepCount);
         Steps = String.valueOf((mStepsSinceReboot));
         mSensorManager = (SensorManager) this.getSystemService(Context.SENSOR_SERVICE);
         if (mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER) != null) {
