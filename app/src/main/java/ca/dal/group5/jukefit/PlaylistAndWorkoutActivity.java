@@ -1,8 +1,13 @@
 package ca.dal.group5.jukefit;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -12,11 +17,13 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
 
-public class PlaylistAndWorkoutActivity extends AppCompatActivity {
+
+public class PlaylistAndWorkoutActivity extends AppCompatActivity implements SensorEventListener {
 
     public String fullPath;
     File file;
@@ -24,18 +31,30 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity {
     private String[] FilePathStrings;
     private String[] FileNameStrings;
     ListView listview;
+    private SensorManager mSensorManager;
+    private Sensor mSensor;
+    private boolean isSensorPresent = false;
+    private TextView mStepsSinceReboot;
+    public String Steps;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_playlist_and_workout);
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabAdd);
-        fab.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton fabAdd = (FloatingActionButton) findViewById(R.id.fabAdd);
+        fabAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(PlaylistAndWorkoutActivity.this, AddSongsActivity.class);
                 finish();
                 startActivity(intent);
+            }
+        });
+        final FloatingActionButton fabStart = (FloatingActionButton) findViewById(R.id.fabStart);
+        fabStart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
             }
         });
         ActivityCompat.requestPermissions(PlaylistAndWorkoutActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
@@ -95,11 +114,50 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity {
         listview.setItemsCanFocus(false);
         listview.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 
+        
+        mStepsSinceReboot = (TextView) findViewById(R.id.StepsCount);
+        Steps = String.valueOf((mStepsSinceReboot));
+        mSensorManager = (SensorManager) this.getSystemService(Context.SENSOR_SERVICE);
+        if (mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER) != null) {
+            mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+            isSensorPresent = true;
+        }
+        else
+        {
+            isSensorPresent = false;
+        }
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
+    protected void onResume() {
+        super.onResume();
+        if (isSensorPresent) {
+            mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (isSensorPresent) {
+            mSensorManager.unregisterListener(this);
+        }
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        mStepsSinceReboot.setText(String.valueOf(event.values[0]).substring(0,String.valueOf(event.values[0]).length() - 2));
+
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
             case 1: {
                 if (grantResults.length > 0
