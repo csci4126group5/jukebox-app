@@ -37,7 +37,7 @@ public class AddSongsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(AddSongsActivity.this, PlaylistAndWorkoutActivity.class);
-                finish();
+                //finish();
                 startActivity(intent);
             }
         });

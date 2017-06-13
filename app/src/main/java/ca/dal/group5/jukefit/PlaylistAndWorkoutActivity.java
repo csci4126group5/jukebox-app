@@ -49,7 +49,7 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(PlaylistAndWorkoutActivity.this, CompetitionView.class);
-                finish();
+                //finish();
                 startActivity(intent);
             }
         });
