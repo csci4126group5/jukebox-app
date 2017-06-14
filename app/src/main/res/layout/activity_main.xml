@@ -58,6 +58,4 @@
         app:backgroundTint="@drawable/cb_selector"
         app:fabSize="normal"
         app:srcCompat="@android:color/background_light" />
-
-
 </RelativeLayout>
