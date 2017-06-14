@@ -19,6 +19,7 @@ import java.util.ArrayList;
 
 import ca.dal.group5.jukefit.API.APISpec;
 import ca.dal.group5.jukefit.API.MockAPI;
+import ca.dal.group5.jukefit.API.RequestHandler;
 import ca.dal.group5.jukefit.Model.Group;
 import ca.dal.group5.jukefit.Model.Member;
 import ca.dal.group5.jukefit.Preferences.PreferencesService;
@@ -186,9 +187,18 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
     public void onSensorChanged(SensorEvent event) {
         Log.d("sensor", event.toString());
         stepsTakenTextView.setText(String.valueOf(event.values[0]).substring(0,String.valueOf(event.values[0]).length() - 2));
-        String steps = stepsTakenTextView.getText().toString();
-        ServerAPI.updateScore(null, prefs.getDeviceID(), Integer.parseInt(steps));
-        updateInformation(Integer.parseInt(steps));
+        final String steps = stepsTakenTextView.getText().toString();
+        ServerAPI.updateScore(null, prefs.getDeviceID(), Integer.parseInt(steps), new RequestHandler<Member>() {
+            @Override
+            public void success(Member result) {
+                updateInformation(Integer.parseInt(steps));
+            }
+
+            @Override
+            public void error(int code) {
+
+            }
+        });
     }
 
     @Override
@@ -210,11 +220,20 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
         }
     }
 
-    void updateInformation(int currentSteps) {
-        Group group = ServerAPI.groupInformation(groupCode);
-        setLeaderboard(group);
-        setStepsProgress(currentSteps);
-        setStepsDifference(group, currentSteps);
+    void updateInformation(final int currentSteps) {
+        ServerAPI.groupInformation(groupCode, new RequestHandler<Group>() {
+            @Override
+            public void success(Group result) {
+                setLeaderboard(result);
+                setStepsProgress(currentSteps);
+                setStepsDifference(result, currentSteps);
+            }
+
+            @Override
+            public void error(int code) {
+
+            }
+        });
     }
 
     void setLeaderboard(Group group) {

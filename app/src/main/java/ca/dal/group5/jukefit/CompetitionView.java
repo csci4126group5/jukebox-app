@@ -12,6 +12,7 @@ import java.util.Collections;
 
 import ca.dal.group5.jukefit.API.APISpec;
 import ca.dal.group5.jukefit.API.MockAPI;
+import ca.dal.group5.jukefit.API.RequestHandler;
 import ca.dal.group5.jukefit.Model.Group;
 import ca.dal.group5.jukefit.Model.Member;
 
@@ -39,10 +40,19 @@ public class CompetitionView extends AppCompatActivity {
         updateInformation(0);
     }
 
-    void updateInformation(int currentSteps) {
-        Group group = ServerAPI.groupInformation(groupCode);
-        setLeaderboard(group);
-        setStepsDifference(group, currentSteps);
+    void updateInformation(final int currentSteps) {
+        ServerAPI.groupInformation(groupCode, new RequestHandler<Group>() {
+            @Override
+            public void success(Group result) {
+                setLeaderboard(result);
+                setStepsDifference(result, currentSteps);
+            }
+
+            @Override
+            public void error(int code) {
+
+            }
+        });
     }
 
     void setLeaderboard(Group group) {

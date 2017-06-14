@@ -16,6 +16,7 @@ import java.util.List;
 
 import ca.dal.group5.jukefit.API.APISpec;
 import ca.dal.group5.jukefit.API.MockAPI;
+import ca.dal.group5.jukefit.API.RequestHandler;
 import ca.dal.group5.jukefit.Dialog.CreateGroupDialog;
 import ca.dal.group5.jukefit.Dialog.JoinGroupDialog;
 import ca.dal.group5.jukefit.Model.Group;
@@ -146,17 +147,44 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onGroupJoined(String nickname, String groupCode, String username) {
-        Group joined = ServerAPI.joinGroup(groupCode, username, prefs.getDeviceID());
-        savedGroups.add(new Pair<String, Group>(nickname, joined));
-        populateListView();
+    public void onGroupJoined(final String nickname, String groupCode, String username) {
+        ServerAPI.joinGroup(groupCode, username, prefs.getDeviceID(), new RequestHandler<Group>() {
+            @Override
+            public void success(Group joined) {
+                savedGroups.add(new Pair<String, Group>(nickname, joined));
+                populateListView();
+            }
+
+            @Override
+            public void error(int code) {
+
+            }
+        });
     }
 
     @Override
-    public void onGroupCreated(String nickname, String username) {
-        Group created = ServerAPI.createGroup();
-        Group joined = ServerAPI.joinGroup(created.getCode(), username, prefs.getDeviceID());
-        savedGroups.add(new Pair<String, Group>(nickname, joined));
-        populateListView();
+    public void onGroupCreated(final String nickname, final String username) {
+        ServerAPI.createGroup(new RequestHandler<Group>() {
+            @Override
+            public void success(Group created) {
+                ServerAPI.joinGroup(created.getCode(), username, prefs.getDeviceID(), new RequestHandler<Group>() {
+                    @Override
+                    public void success(Group joined) {
+                        savedGroups.add(new Pair<String, Group>(nickname, joined));
+                        populateListView();
+                    }
+
+                    @Override
+                    public void error(int code) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void error(int code) {
+
+            }
+        });
     }
 }

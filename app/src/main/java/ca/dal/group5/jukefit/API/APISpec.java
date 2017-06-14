@@ -13,12 +13,12 @@ import ca.dal.group5.jukefit.Model.Song;
 
 public interface APISpec {
 
-    Group createGroup();
-    Group groupInformation(String groupCode);
-    Group joinGroup(String groupCode, String name, String deviceID);
-    Member updateScore(String groupCode, String deviceID, int newScore);
-    List<Song> mp3List(String deviceID);
-    Song mp3Upload(String deviceID, File songToUpload);
-    File mp3Download(String deviceID, String songName);
+    void createGroup(RequestHandler<Group> callback);
+    void groupInformation(String groupCode, RequestHandler<Group> callback);
+    void joinGroup(String groupCode, String name, String deviceID, RequestHandler<Group> callback);
+    void updateScore(String groupCode, String deviceID, int newScore, RequestHandler<Member> callback);
+    void mp3List(String deviceID, RequestHandler<List<Song>> callback);
+    void mp3Upload(String deviceID, File songToUpload, RequestHandler<Song> callback);
+    void mp3Download(String deviceID, String songName, RequestHandler<File> callback);
 
 }
