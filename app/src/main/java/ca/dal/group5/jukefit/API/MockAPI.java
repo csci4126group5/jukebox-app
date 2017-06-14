@@ -17,32 +17,27 @@ import ca.dal.group5.jukefit.PlaylistAndWorkoutActivity;
 
 public class MockAPI implements APISpec {
 
-    public List <String> playerNames;
-    public static List <String> playerInfo = new ArrayList<>();
-    public int [] Scores;
+    private Member deviceUser;
+
+    public MockAPI() {
+        deviceUser = new Member("YOU", "CURRENT_DEVICE", 0);
+    }
+
     public List<Member> mockMembers(int n) {
         List<Member> members = new ArrayList<Member>();
-        Scores = new int [n];
         Random r = new Random();
         int Low = 0;
         int High = 10000;
-        PlaylistAndWorkoutActivity PWAObj = new PlaylistAndWorkoutActivity();
-        playerInfo.add("YOU"+"                                                 "+PWAObj.Steps);
-        for (int i = 1; i < n; i++) {
-            int Result = r.nextInt(High-Low) + Low;
-            members.add(new Member("Player " + i, "DEVICE_ID_" + i, Result));
-            playerInfo.add("Player " + i+"                                       "+Result);
-            Scores[i] = Result;
+        for (int i = 0; i < n; i++) {
+            if (i == n - 1) {
+                members.add(deviceUser);
+            } else {
+                int randomSteps = r.nextInt(High-Low) + Low;
+                members.add(new Member("Player " + i, "DEVICE_ID_" + i, randomSteps));
+            }
         }
         return members;
     }
-
-    public void UpdateSteps()
-    {
-        PlaylistAndWorkoutActivity PWAObj = new PlaylistAndWorkoutActivity();
-        playerInfo.set(0, "YOU"+"                                                 "+PWAObj.Steps);
-    }
-
 
     @Override
     public Group createGroup() {
@@ -63,7 +58,8 @@ public class MockAPI implements APISpec {
 
     @Override
     public Member updateScore(String groupCode, String deviceID, int newScore) {
-        return new Member("NAME_1", deviceID, newScore);
+        deviceUser.setScore(newScore);
+        return deviceUser;
     }
 
     @Override

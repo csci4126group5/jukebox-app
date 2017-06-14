@@ -1,69 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
     tools:context="ca.dal.group5.jukefit.MainActivity">
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-
-    android:id="@+id/groupName"
-    android:layout_width="368dp"
-    android:layout_height="495dp"
-    android:orientation="vertical"
-    android:visibility="visible"
-    tools:layout_editor_absoluteY="8dp"
-    tools:layout_editor_absoluteX="8dp">
-    <TextView
-        android:id="@+id/selectedGroup"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.38"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Group Name"
-        android:textAlignment="center"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:visibility="visible" />
     <EditText
-        android:id="@+id/nickName"
+        android:id="@+id/groupNickname"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="0.41"
         android:ems="10"
-        android:hint="Enter Name"
-        android:inputType="textPersonName"
-        android:textAlignment="center" />
+        android:hint="Enter Group Nickname"
+        android:inputType="textPersonName" />
 
     <EditText
-        android:id="@+id/passcode"
+        android:id="@+id/groupCode"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0.38"
+        android:layout_marginTop="22dp"
+        android:layout_weight="0.41"
         android:ems="10"
-        android:hint="Please Enter Passcode"
-        android:inputType="numberPassword"
-        android:visibility="invisible" />
+        android:hint="Enter Group Code"
+        android:inputType="textPersonName"
+        app:layout_constraintTop_toBottomOf="@+id/groupNickname" />
 
-    <Button
-        android:id="@+id/passcodeValidation"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.38"
-        android:text="Validate"
-        android:visibility="invisible" />
-
-    <Button
-        android:id="@+id/join"
-        android:layout_width="match_parent"
-        android:layout_height="88dp"
-        android:text="Join"
-        android:textAlignment="center"
-        android:textSize="24sp"
-        android:textStyle="bold" />
 </LinearLayout>
-
-</android.support.constraint.ConstraintLayout>
 

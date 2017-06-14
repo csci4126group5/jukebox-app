@@ -1,10 +1,12 @@
 package ca.dal.group5.jukefit.Model;
 
+import android.support.annotation.NonNull;
+
 /**
  * Created by lockhart on 2017-06-12.
  */
 
-public class Member {
+public class Member implements Comparable<Member> {
 
     String name;
     String deviceID;
@@ -32,11 +34,16 @@ public class Member {
         this.deviceID = deviceID;
     }
 
-    public int getScore(String name) {
+    public int getScore() {
         return score;
     }
 
     public void setScore(int score) {
         this.score = score;
+    }
+
+    @Override
+    public int compareTo(@NonNull Member o) {
+        return o.getScore() - this.getScore();
     }
 }

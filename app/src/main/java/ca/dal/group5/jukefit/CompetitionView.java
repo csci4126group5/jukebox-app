@@ -1,50 +1,75 @@
 package ca.dal.group5.jukefit;
 
-import android.content.Intent;
 import android.graphics.Color;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
+import ca.dal.group5.jukefit.API.APISpec;
 import ca.dal.group5.jukefit.API.MockAPI;
+import ca.dal.group5.jukefit.Model.Group;
+import ca.dal.group5.jukefit.Model.Member;
 
 public class CompetitionView extends AppCompatActivity {
 
-    ListView listview;
-    private String[] playerNameList;
-    TextView Difference;
+    ListView leaderboardListView;
+    TextView stepsDifferenceTextView;
+
+    APISpec ServerAPI;
+    String groupCode = "ABCD";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_competition_view);
-        MockAPI objMockAPI = new MockAPI();
-        objMockAPI.mockMembers(10);
-        listview = (ListView)findViewById(R.id.playerProgress);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.playerlistitem, R.id.playerName, objMockAPI.playerInfo);
-        listview.setAdapter(adapter);
-        listview.setItemsCanFocus(false);
-        listview.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 
-        PlaylistAndWorkoutActivity PWAObj = new PlaylistAndWorkoutActivity();
-        int [] OrderedScores = objMockAPI.Scores;
-        java.util.Arrays.sort(OrderedScores);
-        Difference = (TextView) findViewById(R.id.remainingSteps);
-        if(Integer.parseInt(PWAObj.Steps) >= OrderedScores[OrderedScores.length - 1])
-        {
-            int diff = Integer.parseInt(PWAObj.Steps) - OrderedScores[OrderedScores.length - 2];
-            Difference.setText("You lead by "+diff+" steps");
-            Difference.setTextColor(Color.GREEN);
+        ServerAPI = new MockAPI();
+
+        leaderboardListView = (ListView)findViewById(R.id.playerProgress);
+        leaderboardListView.setItemsCanFocus(false);
+        leaderboardListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+
+        stepsDifferenceTextView = (TextView) findViewById(R.id.remainingSteps);
+
+        updateInformation(0);
+    }
+
+    void updateInformation(int currentSteps) {
+        Group group = ServerAPI.groupInformation(groupCode);
+        setLeaderboard(group);
+        setStepsDifference(group, currentSteps);
+    }
+
+    void setLeaderboard(Group group) {
+        Collections.sort(group.getMembers());
+        ArrayList<String> memberInformation = new ArrayList<String>();
+        for (Member member : group.getMembers()) {
+            memberInformation.add(member.getName() + "                                       " + member.getScore());
         }
-        else
-        {
-            int diff = OrderedScores[OrderedScores.length - 1] -  Integer.parseInt(PWAObj.Steps);
-            Difference.setText("You trail by "+diff+ " steps");
-            Difference.setTextColor(Color.RED);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.playerlistitem, R.id.playerName, memberInformation);
+        leaderboardListView.setAdapter(adapter);
+    }
+
+    void setStepsDifference(Group group, int currentSteps) {
+        ArrayList<Integer> scores = new ArrayList<Integer>();
+        for (Member member : group.getMembers()) {
+            scores.add(member.getScore());
         }
 
+        Collections.sort(scores);
+        if(currentSteps >= (scores.get(scores.size() - 1))) {
+            int diff = currentSteps - scores.get(scores.size() - 2);
+            stepsDifferenceTextView.setText("You lead by "+ diff +" steps");
+            stepsDifferenceTextView.setTextColor(Color.GREEN);
+        } else {
+            int diff = scores.get(scores.size() - 1) -  currentSteps;
+            stepsDifferenceTextView.setText("You trail by "+ diff + " steps");
+            stepsDifferenceTextView.setTextColor(Color.RED);
+        }
     }
 }
