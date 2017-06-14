@@ -87,7 +87,6 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
-
         Button createG=(Button) findViewById(createGroup);
 
      createG.setOnClickListener(new View.OnClickListener() {

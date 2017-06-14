@@ -15,7 +15,6 @@
     android:visibility="visible"
     tools:layout_editor_absoluteY="8dp"
     tools:layout_editor_absoluteX="8dp">
-
     <TextView
         android:id="@+id/selectedGroup"
         android:layout_width="match_parent"
@@ -28,7 +27,6 @@
         android:textSize="24sp"
         android:textStyle="bold"
         android:visibility="visible" />
-
     <EditText
         android:id="@+id/nickName"
         android:layout_width="match_parent"
