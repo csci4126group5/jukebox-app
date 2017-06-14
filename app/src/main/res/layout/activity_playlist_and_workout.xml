@@ -8,11 +8,11 @@
 
     <include
         android:id="@+id/Group_Playlist"
-        layout="@layout/activity_group__playlist" />
+        grouplistitem="@grouplistitem/activity_group__playlist" />
 
     <include
         android:id="@+id/WorkOutActivity"
-        layout="@layout/activity_workout" />
+        grouplistitem="@grouplistitem/activity_workout" />
 </android.support.constraint.ConstraintLayout>-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -28,7 +28,7 @@
         android:layout_weight="2" >
         <include
             android:id="@+id/Group_Playlist"
-            layout="@layout/activity_group__playlist" />
+            grouplistitem="@grouplistitem/activity_group__playlist" />
     </LinearLayout>
     <View
         android:layout_width="fill_parent"

@@ -48,7 +48,7 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_playlist_and_workout);
-        //setContentView(R.layout.activity_competition_view);
+        //setContentView(R.grouplistitem.activity_competition_view);
 
         ServerAPI = new MockAPI();
 
@@ -141,7 +141,7 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
 //        }
 //
 //        leaderboardListView = (ListView)findViewById(R.id.SongListView);
-//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.group_song_list, R.id.SongName, FileNameStrings);
+//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.grouplistitem.group_song_list, R.id.SongName, FileNameStrings);
 //        leaderboardListView.setAdapter(adapter);
 //        leaderboardListView.setItemsCanFocus(false);
 //        leaderboardListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);

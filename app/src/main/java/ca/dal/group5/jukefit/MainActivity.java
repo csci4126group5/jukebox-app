@@ -1,11 +1,11 @@
 package ca.dal.group5.jukefit;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.util.Pair;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -15,9 +15,14 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.List;
 
+import ca.dal.group5.jukefit.API.APISpec;
+import ca.dal.group5.jukefit.API.MockAPI;
+import ca.dal.group5.jukefit.Dialog.CreateGroupDialog;
+import ca.dal.group5.jukefit.Dialog.JoinGroupDialog;
 import ca.dal.group5.jukefit.Model.Group;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+        implements CreateGroupDialog.CreateGroupDialogListener, JoinGroupDialog.JoinGroupDialogListener {
 
     Activity context;
 
@@ -26,7 +31,10 @@ public class MainActivity extends AppCompatActivity {
     Button joinGroupButton;
     Button manageSongsButton;
 
-    ArrayList<Group> savedGroups;
+    ArrayList<Pair<String, Group>> savedGroups;
+    ArrayAdapter<String> groupsListAdapter;
+
+    APISpec ServerAPI;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,32 +43,19 @@ public class MainActivity extends AppCompatActivity {
 
         context = this;
 
-        savedGroups = new ArrayList<Group>();
-
         groupListView = (ListView) findViewById(R.id.groupList);
-
         createGroupButton = (Button) findViewById(R.id.createGroupBtn);
         joinGroupButton = (Button) findViewById(R.id.joinGroupBtn);
         manageSongsButton = (Button) findViewById(R.id.manageSongsBtn);
 
-        this.setTitle("JukeFit");
-        populateListView();
-    }
-
-    private void populateListView() {
-        setContentView(R.layout.activity_main);
-
-        List<String> groupNames = new ArrayList<String>();
-        for (Group group : savedGroups) {
-            groupNames.add(group.getCode());
-        }
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.layout, groupNames);
-        groupListView.setAdapter(adapter);
+        savedGroups = new ArrayList<Pair<String, Group>>();
+        groupsListAdapter = new ArrayAdapter<String>(this, R.layout.grouplistitem, R.id.groupName, new ArrayList<String>());
+        groupListView.setAdapter(groupsListAdapter);
         groupListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getBaseContext(), PlaylistAndWorkoutActivity.class);
-                intent.putExtra("GROUP_CODE", savedGroups.get(position).getCode());
+                intent.putExtra("GROUP_CODE", savedGroups.get(position).second.getCode());
                 startActivity(intent);
 //                // 1. Instantiate an AlertDialog.Builder with its constructor
 //                AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -87,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
 //                TextView textView = (TextView) view;
 //                //String message = "You clicked # " + position + ", which is string: " + textView.getText().toString();
 //                //Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
-//                setContentView(R.layout.joingroup);
+//                setContentView(R.grouplistitem.joingroup);
 //                TextView group = (TextView) findViewById(selectedGroup);
 //                String gName = textView.getText().toString();
 //                group.setText(gName);
@@ -118,63 +113,50 @@ public class MainActivity extends AppCompatActivity {
 //                });
             }
         });
+
+        ServerAPI = new MockAPI();
+
+        this.setTitle("JukeFit");
+        populateListView();
+    }
+
+    private void populateListView() {
+        List<String> groupNames = new ArrayList<String>();
+        for (Pair<String, Group> pair : savedGroups) {
+            groupNames.add(pair.first);
+        }
+
+        groupsListAdapter.clear();
+        groupsListAdapter.addAll(groupNames);
+        groupsListAdapter.notifyDataSetChanged();
     }
 
     public void onCreateGroup(View v) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getBaseContext());
-        builder.setTitle("Create Group");
-        builder.setView(R.layout.creategroup);
-        builder.setPositiveButton("Create", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                // User clicked OK button
-            }
-        });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                // User cancelled the dialog
-            }
-        });
-        AlertDialog dialog = builder.create();
-        dialog.show();
-//        dialog.show();
-//        setContentView(R.layout.creategroup);
-//
-//        Button newGroup = (Button) findViewById(createNewGroup);
-//
-//        newGroup.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//            /*
-//            logic to create group
-//            */
-//            setContentView(R.layout.activity_main);
-//
-//            populateListView();
-//
-//            }
-//        });
+        new CreateGroupDialog().show(getFragmentManager(), "createGroup");
     }
 
     public void onJoinGroup(View v) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getBaseContext());
-        builder.setTitle("Join Group");
-        builder.setView(R.layout.joingroup);
-        builder.setPositiveButton("Join", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                // User clicked OK button
-            }
-        });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                // User cancelled the dialog
-            }
-        });
-        AlertDialog dialog = builder.create();
-        dialog.show();
+       new JoinGroupDialog().show(getFragmentManager(), "joinGroup");
     }
 
     public void onManageSongs(View v) {
         startActivity(new Intent(context, AddSongsActivity.class));
+    }
+
+    @Override
+    public void onGroupJoined(String nickname, String groupCode) {
+        Log.d("joining", nickname + " " + groupCode);
+        Group joined = ServerAPI.joinGroup(groupCode, "YOU", "DEVICE_ID");
+        savedGroups.add(new Pair<String, Group>(nickname, joined));
+        populateListView();
+    }
+
+    @Override
+    public void onGroupCreated(String nickname) {
+        Log.d("creating", nickname);
+        Group created = ServerAPI.createGroup();
+        Group joined = ServerAPI.joinGroup(created.getCode(), "YOU", "DEVICE_ID");
+        savedGroups.add(new Pair<String, Group>(nickname, joined));
+        populateListView();
     }
 }
