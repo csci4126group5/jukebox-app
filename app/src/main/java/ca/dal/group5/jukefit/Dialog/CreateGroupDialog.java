@@ -18,7 +18,7 @@ public class CreateGroupDialog extends DialogFragment {
     CreateGroupDialogListener listener;
 
     public interface CreateGroupDialogListener {
-        public void onGroupCreated(String nickname);
+        public void onGroupCreated(String nickname, String username);
     }
 
     @Override
@@ -40,11 +40,12 @@ public class CreateGroupDialog extends DialogFragment {
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Create Group")
-                .setView(R.layout.creategroup)
+                .setView(R.layout.dialog_creategroup)
                 .setPositiveButton("Join", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         EditText nickname = (EditText) ((Dialog) dialog).findViewById(R.id.groupNickname);
-                        listener.onGroupCreated(nickname.getText().toString());
+                        EditText username = (EditText) ((Dialog) dialog).findViewById(R.id.username);
+                        listener.onGroupCreated(nickname.getText().toString(), username.getText().toString());
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

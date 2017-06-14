@@ -21,6 +21,7 @@ import ca.dal.group5.jukefit.API.APISpec;
 import ca.dal.group5.jukefit.API.MockAPI;
 import ca.dal.group5.jukefit.Model.Group;
 import ca.dal.group5.jukefit.Model.Member;
+import ca.dal.group5.jukefit.Preferences.PreferencesService;
 
 import static ca.dal.group5.jukefit.R.id.determinateBar;
 
@@ -42,7 +43,10 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
     ProgressBar stepsProgress;
 
     APISpec ServerAPI;
-    String groupCode = "ABCD";
+    PreferencesService prefs;
+
+    String groupCode = "<na>";
+    String groupName = "<na>";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -50,7 +54,11 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
         setContentView(R.layout.activity_playlist_and_workout);
         //setContentView(R.grouplistitem.activity_competition_view);
 
+        groupCode = getIntent().getStringExtra("GROUP_CODE");
+        groupName = getIntent().getStringExtra("GROUP_NAME");
+
         ServerAPI = new MockAPI();
+        prefs = new PreferencesService(this);
 
         leaderboardListView = (ListView)findViewById(R.id.playerProgress);
         leaderboardListView.setItemsCanFocus(false);
@@ -61,8 +69,6 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
         stepsTakenTextView = (TextView) findViewById(R.id.stepCount);
 
         stepsProgress = (ProgressBar) findViewById(determinateBar);
-
-        updateInformation(0);
 
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabGroup);
 //        fab.setOnClickListener(new View.OnClickListener() {
@@ -155,6 +161,9 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
         {
             isSensorPresent = false;
         }
+
+        this.setTitle(groupName);
+        updateInformation(0);
     }
 
     @Override
@@ -178,7 +187,7 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
         Log.d("sensor", event.toString());
         stepsTakenTextView.setText(String.valueOf(event.values[0]).substring(0,String.valueOf(event.values[0]).length() - 2));
         String steps = stepsTakenTextView.getText().toString();
-        ServerAPI.updateScore(null, "CURRENT_DEVICE", Integer.parseInt(steps));
+        ServerAPI.updateScore(null, prefs.getDeviceID(), Integer.parseInt(steps));
         updateInformation(Integer.parseInt(steps));
     }
 

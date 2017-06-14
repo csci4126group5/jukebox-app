@@ -27,5 +27,16 @@
         android:inputType="textPersonName"
         app:layout_constraintTop_toBottomOf="@+id/groupNickname" />
 
+    <EditText
+        android:id="@+id/username"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="22dp"
+        android:layout_weight="0.41"
+        android:ems="10"
+        android:hint="Enter Username"
+        android:inputType="textPersonName"
+        app:layout_constraintTop_toBottomOf="@+id/groupNickname" />
+
 </LinearLayout>
 

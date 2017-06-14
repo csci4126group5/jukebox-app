@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.widget.AdapterView;
@@ -20,6 +19,7 @@ import ca.dal.group5.jukefit.API.MockAPI;
 import ca.dal.group5.jukefit.Dialog.CreateGroupDialog;
 import ca.dal.group5.jukefit.Dialog.JoinGroupDialog;
 import ca.dal.group5.jukefit.Model.Group;
+import ca.dal.group5.jukefit.Preferences.PreferencesService;
 
 public class MainActivity extends AppCompatActivity
         implements CreateGroupDialog.CreateGroupDialogListener, JoinGroupDialog.JoinGroupDialogListener {
@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity
     ArrayAdapter<String> groupsListAdapter;
 
     APISpec ServerAPI;
+    PreferencesService prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +43,9 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         context = this;
+
+        ServerAPI = new MockAPI();
+        prefs = new PreferencesService(this);
 
         groupListView = (ListView) findViewById(R.id.groupList);
         createGroupButton = (Button) findViewById(R.id.createGroupBtn);
@@ -56,6 +60,7 @@ public class MainActivity extends AppCompatActivity
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getBaseContext(), PlaylistAndWorkoutActivity.class);
                 intent.putExtra("GROUP_CODE", savedGroups.get(position).second.getCode());
+                intent.putExtra("GROUP_NAME", savedGroups.get(position).first);
                 startActivity(intent);
 //                // 1. Instantiate an AlertDialog.Builder with its constructor
 //                AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -82,7 +87,7 @@ public class MainActivity extends AppCompatActivity
 //                TextView textView = (TextView) view;
 //                //String message = "You clicked # " + position + ", which is string: " + textView.getText().toString();
 //                //Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
-//                setContentView(R.grouplistitem.joingroup);
+//                setContentView(R.grouplistitem.dialog_joingroup);
 //                TextView group = (TextView) findViewById(selectedGroup);
 //                String gName = textView.getText().toString();
 //                group.setText(gName);
@@ -113,9 +118,6 @@ public class MainActivity extends AppCompatActivity
 //                });
             }
         });
-
-        ServerAPI = new MockAPI();
-
         this.setTitle("JukeFit");
         populateListView();
     }
@@ -144,18 +146,16 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onGroupJoined(String nickname, String groupCode) {
-        Log.d("joining", nickname + " " + groupCode);
-        Group joined = ServerAPI.joinGroup(groupCode, "YOU", "DEVICE_ID");
+    public void onGroupJoined(String nickname, String groupCode, String username) {
+        Group joined = ServerAPI.joinGroup(groupCode, username, prefs.getDeviceID());
         savedGroups.add(new Pair<String, Group>(nickname, joined));
         populateListView();
     }
 
     @Override
-    public void onGroupCreated(String nickname) {
-        Log.d("creating", nickname);
+    public void onGroupCreated(String nickname, String username) {
         Group created = ServerAPI.createGroup();
-        Group joined = ServerAPI.joinGroup(created.getCode(), "YOU", "DEVICE_ID");
+        Group joined = ServerAPI.joinGroup(created.getCode(), username, prefs.getDeviceID());
         savedGroups.add(new Pair<String, Group>(nickname, joined));
         populateListView();
     }
