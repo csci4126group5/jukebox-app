@@ -26,10 +26,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         final Activity activity = this;
-
         setContentView(R.layout.activity_main);
         activity.setTitle("Music App");
-
         populateListView();
 
     }
@@ -78,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
                         {
 
                         }*/
+
 
                     }
                 });
