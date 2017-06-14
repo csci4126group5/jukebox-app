@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/darker_gray"
+    tools:context="ca.dal.group5.jukefit.MainActivity">
+
+    <ListView
+        android:id="@+id/listView"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:background="@android:color/darker_gray"
+        android:theme="@style/Animation.AppCompat.DropDownUp"
+        android:verticalScrollbarPosition="right"
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="8dp"
+        android:layout_below="@+id/textView"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <Button
+        android:id="@+id/createGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Create Group"
+        tools:layout_editor_absoluteX="142dp"
+        tools:layout_editor_absoluteY="442dp"
+        android:layout_marginTop="16dp"
+        android:layout_below="@+id/listView"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="17dp"
+        android:layout_marginStart="17dp" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/createGroup"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/createGroup"
+        android:layout_marginTop="17dp"
+        android:text="Groups"
+        android:textSize="30sp" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/songlistFB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/createGroup"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="72dp"
+        android:layout_marginRight="72dp"
+        android:clickable="true"
+        app:backgroundTint="@drawable/cb_selector"
+        app:fabSize="normal"
+        app:srcCompat="@android:color/background_light" />
+
+
+</RelativeLayout>
