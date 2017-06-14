@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -23,36 +24,66 @@ import android.widget.Toast;
 
 import java.io.File;
 
+import ca.dal.group5.jukefit.API.MockAPI;
+
 import static ca.dal.group5.jukefit.R.id.determinateBar;
 
 
 public class PlaylistAndWorkoutActivity extends AppCompatActivity implements SensorEventListener {
 
-    public String fullPath;
+    /*public String fullPath;
     File file;
     private File[] listFile;
     private String[] FilePathStrings;
     private String[] FileNameStrings;
-    ListView listview;
+    ListView listview;*/
     private SensorManager mSensorManager;
     private Sensor mSensor;
     private boolean isSensorPresent = false;
     private TextView mStepsSinceReboot;
-    public static String Steps;
-
+    public static String Steps = "0";
+    ListView listview;
+    private String[] playerNameList;
+    TextView Difference;
+    public int [] OrderedScores;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_playlist_and_workout);
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabGroup);
+        //setContentView(R.layout.activity_competition_view);
+        MockAPI objMockAPI = new MockAPI();
+        objMockAPI.mockMembers(10);
+        listview = (ListView)findViewById(R.id.playerProgress);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.playerlistitem, R.id.playerName, objMockAPI.playerInfo);
+        listview.setAdapter(adapter);
+        listview.setItemsCanFocus(false);
+        listview.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+
+        OrderedScores = objMockAPI.Scores;
+        java.util.Arrays.sort(OrderedScores);
+        Difference = (TextView) findViewById(R.id.remainingSteps);
+        if(Integer.parseInt(Steps) >= (OrderedScores[OrderedScores.length - 1]))
+        {
+            int diff = Integer.parseInt(Steps) - OrderedScores[OrderedScores.length - 2];
+            Difference.setText("You lead by "+ diff +" steps");
+            Difference.setTextColor(Color.GREEN);
+        }
+        else
+        {
+            int diff = OrderedScores[OrderedScores.length - 1] -  Integer.parseInt(Steps);
+            Difference.setText("You trail by "+ diff + " steps");
+            Difference.setTextColor(Color.RED);
+        }
+
+        /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabGroup);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(PlaylistAndWorkoutActivity.this, CompetitionView.class);
-                finish();
+                //finish();
                 startActivity(intent);
             }
-        });
+        });*/
         /*FloatingActionButton fabAdd = (FloatingActionButton) findViewById(R.id.fabAdd);
         fabAdd.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -161,8 +192,27 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
         ProgressBar PBar = (ProgressBar) findViewById(determinateBar);
         int NumSteps = Integer.valueOf(mStepsSinceReboot.getText().toString());
         Steps = mStepsSinceReboot.getText().toString();
+        MockAPI MAPIObj = new MockAPI();
+        MAPIObj.UpdateSteps();
         int Percentage = Integer.valueOf(NumSteps/100);
         PBar.setProgress(Percentage);
+        if(Integer.parseInt(Steps) >= (OrderedScores[OrderedScores.length - 1]))
+        {
+            int diff = Integer.parseInt(Steps) - OrderedScores[OrderedScores.length - 2];
+            Difference.setText("You lead by "+ diff +" steps");
+            Difference.setTextColor(Color.GREEN);
+        }
+        else
+        {
+            int diff = OrderedScores[OrderedScores.length - 1] -  Integer.parseInt(Steps);
+            Difference.setText("You trail by "+ diff + " steps");
+            Difference.setTextColor(Color.RED);
+        }
+        MockAPI objMockAPI = new MockAPI();
+        ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(this, R.layout.playerlistitem, R.id.playerName, objMockAPI.playerInfo);
+        listview.setAdapter(adapter2);
+        listview.setItemsCanFocus(false);
+        listview.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 
     }
 

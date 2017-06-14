@@ -16,6 +16,8 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AddSongsActivity extends AppCompatActivity {
 
@@ -25,19 +27,26 @@ public class AddSongsActivity extends AppCompatActivity {
     private String[] FilePathStrings;
     private String[] FileNameStrings;
     ListView listview;
+    public List<SongWrapper> SongWrapperList;
+    public List <String> SelectedSongs;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_songs);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        SongWrapperList = new ArrayList<SongWrapper>();
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabAddSongs);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                SelectedSongs = new ArrayList<String>();
+                for(SongWrapper SWRec : SongWrapperList)
+                    if(SWRec.isSelected)
+                        SelectedSongs.add(SWRec.SongPath);
+
                 Intent intent = new Intent(AddSongsActivity.this, PlaylistAndWorkoutActivity.class);
-                finish();
+                //finish();
                 startActivity(intent);
             }
         });
@@ -91,13 +100,16 @@ public class AddSongsActivity extends AppCompatActivity {
                 }
             }
         }
+        if(FilePathStrings != null) {
+            for (String SPath : FilePathStrings)
+                SongWrapperList.add(new SongWrapper(SPath));
 
-        listview = (ListView)findViewById(R.id.SongListView);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.songlistitem, R.id.SongName, FileNameStrings);
-        listview.setAdapter(adapter);
-        listview.setItemsCanFocus(false);
-        listview.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-
+            listview = (ListView) findViewById(R.id.SongListView);
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.songlistitem, R.id.SongName, FileNameStrings);
+            listview.setAdapter(adapter);
+            listview.setItemsCanFocus(false);
+            listview.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+        }
     }
 
     @Override
@@ -113,6 +125,37 @@ public class AddSongsActivity extends AppCompatActivity {
                 return;
             }
         }
+    }
+
+    public class SongWrapper
+    {
+        public String SongPath;
+        public Boolean isSelected;
+
+        public void setSongPath(String songPath) {
+            SongPath = songPath;
+        }
+
+        public void setSelected(Boolean selected) {
+            isSelected = selected;
+        }
+
+
+
+        public String getSongPath() {
+            return SongPath;
+        }
+
+        public Boolean getSelected() {
+            return isSelected;
+        }
+
+        public SongWrapper(String SPath)
+        {
+            SongPath = SPath;
+            isSelected = false;
+        }
+
     }
 
 }
