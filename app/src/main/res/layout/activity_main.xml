@@ -1,64 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@android:color/background_light"
+    android:orientation="vertical"
     tools:context="ca.dal.group5.jukefit.MainActivity">
 
     <ListView
         android:id="@+id/groupList"
         android:layout_width="match_parent"
-        android:layout_height="400dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
+        android:layout_weight="1"
         android:background="@android:color/background_light"
         android:theme="@style/Animation.AppCompat.DropDownUp"
-        android:verticalScrollbarPosition="right"
-        tools:layout_editor_absoluteX="8dp"
-        tools:layout_editor_absoluteY="8dp" />
+        android:verticalScrollbarPosition="right" />
 
-    <Button
-        android:id="@+id/createGroupBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="15dp"
-        android:layout_marginLeft="19dp"
-        android:layout_marginStart="19dp"
-        android:text="Create Group"
-        tools:layout_editor_absoluteX="142dp"
-        tools:layout_editor_absoluteY="442dp" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_weight="1"
+        android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/joinGroupBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/createGroupBtn"
-        android:layout_alignBottom="@+id/createGroupBtn"
-        android:layout_marginLeft="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_toEndOf="@+id/createGroupBtn"
-        android:layout_toRightOf="@+id/createGroupBtn"
-        android:text="Join Group"
-        tools:layout_editor_absoluteX="142dp"
-        tools:layout_editor_absoluteY="442dp" />
+        <Button
+            android:id="@+id/joinGroupBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/createGroupBtn"
+            android:layout_alignBottom="@+id/createGroupBtn"
+            android:layout_toEndOf="@+id/createGroupBtn"
+            android:layout_toRightOf="@+id/createGroupBtn"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:onClick="onJoinGroup"
+            android:text="Join Group" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/manageSongsBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/createGroupBtn"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginEnd="20dp"
-        android:layout_marginRight="20dp"
-        android:clickable="true"
-        app:backgroundTint="@drawable/cb_selector"
-        app:fabSize="normal"
-        app:srcCompat="@android:color/background_light" />
+        <Button
+            android:id="@+id/createGroupBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:onClick="onCreateGroup"
+            android:text="Create Group" />
 
-</RelativeLayout>
+        <Button
+            android:id="@+id/manageSongsBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:onClick="onManageSongs"
+            android:text="Manage Songs" />
+
+    </LinearLayout>
+
+</LinearLayout>
