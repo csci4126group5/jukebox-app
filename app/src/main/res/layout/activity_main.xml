@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:background="@android:color/darker_gray"
     tools:context="ca.dal.group5.jukefit.MainActivity">
-
     <ListView
         android:id="@+id/listView"
         android:layout_width="match_parent"
@@ -19,7 +18,6 @@
         android:layout_below="@+id/textView"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
-
     <Button
         android:id="@+id/createGroup"
         android:layout_width="wrap_content"
