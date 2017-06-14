@@ -18,7 +18,7 @@ import ca.dal.group5.jukefit.PlaylistAndWorkoutActivity;
 public class MockAPI implements APISpec {
 
     public List <String> playerNames;
-    public List <String> playerInfo;
+    public static List <String> playerInfo = new ArrayList<>();
     public int [] Scores;
     public List<Member> mockMembers(int n) {
         List<Member> members = new ArrayList<Member>();
@@ -26,7 +26,6 @@ public class MockAPI implements APISpec {
         Random r = new Random();
         int Low = 0;
         int High = 10000;
-        playerInfo = new ArrayList<>();
         PlaylistAndWorkoutActivity PWAObj = new PlaylistAndWorkoutActivity();
         playerInfo.add("YOU"+"                                                 "+PWAObj.Steps);
         for (int i = 1; i < n; i++) {
@@ -36,6 +35,12 @@ public class MockAPI implements APISpec {
             Scores[i] = Result;
         }
         return members;
+    }
+
+    public void UpdateSteps()
+    {
+        PlaylistAndWorkoutActivity PWAObj = new PlaylistAndWorkoutActivity();
+        playerInfo.set(0, "YOU"+"                                                 "+PWAObj.Steps);
     }
 
 

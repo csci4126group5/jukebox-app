@@ -192,6 +192,8 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
         ProgressBar PBar = (ProgressBar) findViewById(determinateBar);
         int NumSteps = Integer.valueOf(mStepsSinceReboot.getText().toString());
         Steps = mStepsSinceReboot.getText().toString();
+        MockAPI MAPIObj = new MockAPI();
+        MAPIObj.UpdateSteps();
         int Percentage = Integer.valueOf(NumSteps/100);
         PBar.setProgress(Percentage);
         if(Integer.parseInt(Steps) >= (OrderedScores[OrderedScores.length - 1]))
@@ -206,6 +208,11 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
             Difference.setText("You trail by "+ diff + " steps");
             Difference.setTextColor(Color.RED);
         }
+        MockAPI objMockAPI = new MockAPI();
+        ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(this, R.layout.playerlistitem, R.id.playerName, objMockAPI.playerInfo);
+        listview.setAdapter(adapter2);
+        listview.setItemsCanFocus(false);
+        listview.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 
     }
 
