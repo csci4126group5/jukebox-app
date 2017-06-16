@@ -20,7 +20,7 @@ public class MockAPI implements APISpec {
     private Member deviceUser;
 
     public MockAPI() {
-        deviceUser = new Member("YOU", "CURRENT_DEVICE", 0);
+        deviceUser = new Member("YOU          ", "CURRENT_DEVICE", 0);
     }
 
     public List<Member> mockMembers(int n) {
@@ -28,8 +28,8 @@ public class MockAPI implements APISpec {
         Random r = new Random();
         int Low = 0;
         int High = 10000;
-        for (int i = 0; i < n; i++) {
-            if (i == n - 1) {
+        for (int i = 1; i <= n; i++) {
+            if (i == n) {
                 members.add(deviceUser);
             } else {
                 int randomSteps = r.nextInt(High-Low) + Low;
