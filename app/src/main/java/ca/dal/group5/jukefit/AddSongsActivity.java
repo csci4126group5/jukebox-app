@@ -45,8 +45,8 @@ public class AddSongsActivity extends AppCompatActivity {
                     if(SWRec.isSelected)
                         SelectedSongs.add(SWRec.SongPath);
 
-                Intent intent = new Intent(AddSongsActivity.this, PlaylistAndWorkoutActivity.class);
-                //finish();
+                Intent intent = new Intent(AddSongsActivity.this, MainActivity.class);
+                finish();
                 startActivity(intent);
             }
         });

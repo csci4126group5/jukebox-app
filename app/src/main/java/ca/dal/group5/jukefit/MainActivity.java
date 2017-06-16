@@ -144,6 +144,7 @@ public class MainActivity extends AppCompatActivity
 
     public void onManageSongs(View v) {
         startActivity(new Intent(context, AddSongsActivity.class));
+        finish();
     }
 
     @Override
