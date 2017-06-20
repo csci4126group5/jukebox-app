@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.widget.AdapterView;
@@ -14,6 +15,7 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.List;
 
+import ca.dal.group5.jukefit.API.APIService;
 import ca.dal.group5.jukefit.API.APISpec;
 import ca.dal.group5.jukefit.API.MockAPI;
 import ca.dal.group5.jukefit.API.RequestHandler;
@@ -47,6 +49,13 @@ public class MainActivity extends AppCompatActivity
 
         ServerAPI = new MockAPI();
         prefs = new PreferencesService(this);
+
+        new APIService().createGroup(new RequestHandler<Group>() {
+            @Override
+            public void callback(Group result) {
+                Log.d("API", "call completed");
+            }
+        });
 
         groupListView = (ListView) findViewById(R.id.groupList);
         createGroupButton = (Button) findViewById(R.id.createGroupBtn);
@@ -151,14 +160,9 @@ public class MainActivity extends AppCompatActivity
     public void onGroupJoined(final String nickname, String groupCode, String username) {
         ServerAPI.joinGroup(groupCode, username, prefs.getDeviceID(), new RequestHandler<Group>() {
             @Override
-            public void success(Group joined) {
+            public void callback(Group joined) {
                 savedGroups.add(new Pair<String, Group>(nickname, joined));
                 populateListView();
-            }
-
-            @Override
-            public void error(int code) {
-
             }
         });
     }
@@ -167,24 +171,14 @@ public class MainActivity extends AppCompatActivity
     public void onGroupCreated(final String nickname, final String username) {
         ServerAPI.createGroup(new RequestHandler<Group>() {
             @Override
-            public void success(Group created) {
+            public void callback(Group created) {
                 ServerAPI.joinGroup(created.getCode(), username, prefs.getDeviceID(), new RequestHandler<Group>() {
                     @Override
-                    public void success(Group joined) {
+                    public void callback(Group joined) {
                         savedGroups.add(new Pair<String, Group>(nickname, joined));
                         populateListView();
                     }
-
-                    @Override
-                    public void error(int code) {
-
-                    }
                 });
-            }
-
-            @Override
-            public void error(int code) {
-
             }
         });
     }

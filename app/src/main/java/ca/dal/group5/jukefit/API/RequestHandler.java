@@ -6,6 +6,5 @@ package ca.dal.group5.jukefit.API;
 
 public interface RequestHandler<T> {
 
-    void success(T result);
-    void error(int code);
+    void callback(T result);
 }

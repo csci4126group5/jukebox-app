@@ -43,14 +43,9 @@ public class CompetitionView extends AppCompatActivity {
     void updateInformation(final int currentSteps) {
         ServerAPI.groupInformation(groupCode, new RequestHandler<Group>() {
             @Override
-            public void success(Group result) {
+            public void callback(Group result) {
                 setLeaderboard(result);
                 setStepsDifference(result, currentSteps);
-            }
-
-            @Override
-            public void error(int code) {
-
             }
         });
     }

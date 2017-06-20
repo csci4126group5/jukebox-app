@@ -40,44 +40,44 @@ public class MockAPI implements APISpec {
     }
 
     @Override
-    public void createGroup(RequestHandler<Group> callback) {
-        callback.success(new Group("ABCD", mockMembers(0), null, null));
+    public void createGroup(RequestHandler<Group> handler) {
+        handler.callback(new Group("ABCD", mockMembers(0), null, null));
     }
 
     @Override
-    public void groupInformation(String groupCode, RequestHandler<Group> callback) {
-        callback.success(new Group(groupCode, mockMembers(3), new Song("/DEVICE_ID_1/mp3/SONG_NAME_1", new Date()), new Song("/DEVICE_ID_1/mp3/SONG_NAME_2", new Date())));
+    public void groupInformation(String groupCode, RequestHandler<Group> handler) {
+        handler.callback(new Group(groupCode, mockMembers(3), new Song("/DEVICE_ID_1/mp3/SONG_NAME_1", new Date()), new Song("/DEVICE_ID_1/mp3/SONG_NAME_2", new Date())));
     }
 
     @Override
-    public void joinGroup(String groupCode, String name, String deviceID, RequestHandler<Group> callback) {
+    public void joinGroup(String groupCode, String name, String deviceID, RequestHandler<Group> handler) {
         List<Member> members = mockMembers(2);
         members.add(new Member(name, deviceID, 0));
-        callback.success(new Group(groupCode, members, new Song("/DEVICE_ID_1/mp3/SONG_NAME_1", new Date()), new Song("/DEVICE_ID_1/mp3/SONG_NAME_2", new Date())));
+        handler.callback(new Group(groupCode, members, new Song("/DEVICE_ID_1/mp3/SONG_NAME_1", new Date()), new Song("/DEVICE_ID_1/mp3/SONG_NAME_2", new Date())));
     }
 
     @Override
-    public void updateScore(String groupCode, String deviceID, int newScore, RequestHandler<Member> callback) {
+    public void updateScore(String groupCode, String deviceID, int newScore, RequestHandler<Member> handler) {
         deviceUser.setScore(newScore);
-        callback.success(deviceUser);
+        handler.callback(deviceUser);
     }
 
     @Override
-    public void mp3List(String deviceID, RequestHandler<List<Song>> callback) {
+    public void mp3List(String deviceID, RequestHandler<List<Song>> handler) {
         List<Song> songs = new ArrayList<Song>();
         for (int i = 0; i < 4; i++) {
             songs.add(new Song("SONG_NAME_" + i, "/" + deviceID + "/mp3/SONG_NAME_" + i));
         }
-        callback.success(songs);
+        handler.callback(songs);
     }
 
     @Override
-    public void mp3Upload(String deviceID, File songToUpload, RequestHandler<Song> callback) {
-        callback.success(new Song("SONG_NAME", "/" + deviceID + "/mp3/SONG_NAME"));
+    public void mp3Upload(String deviceID, File songToUpload, RequestHandler<Song> handler) {
+        handler.callback(new Song("SONG_NAME", "/" + deviceID + "/mp3/SONG_NAME"));
     }
 
     @Override
-    public void mp3Download(String deviceID, String songName, RequestHandler<File> callback) {
-        callback.success(null);
+    public void mp3Download(String deviceID, String songName, RequestHandler<File> handler) {
+        handler.callback(null);
     }
 }

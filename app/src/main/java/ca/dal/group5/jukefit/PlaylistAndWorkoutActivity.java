@@ -190,13 +190,8 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
         final String steps = stepsTakenTextView.getText().toString();
         ServerAPI.updateScore(null, prefs.getDeviceID(), Integer.parseInt(steps), new RequestHandler<Member>() {
             @Override
-            public void success(Member result) {
+            public void callback(Member result) {
                 updateInformation(Integer.parseInt(steps));
-            }
-
-            @Override
-            public void error(int code) {
-
             }
         });
     }
@@ -223,15 +218,10 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
     void updateInformation(final int currentSteps) {
         ServerAPI.groupInformation(groupCode, new RequestHandler<Group>() {
             @Override
-            public void success(Group result) {
+            public void callback(Group result) {
                 setLeaderboard(result);
                 setStepsProgress(currentSteps);
                 setStepsDifference(result, currentSteps);
-            }
-
-            @Override
-            public void error(int code) {
-
             }
         });
     }
