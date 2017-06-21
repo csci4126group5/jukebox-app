@@ -41,6 +41,7 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
     ListView leaderboardListView;
     TextView stepsDifferenceTextView;
     TextView stepsTakenTextView;
+    TextView speedTextView;
     ProgressBar stepsProgress;
 
     APISpec ServerAPI;
@@ -68,8 +69,8 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
         stepsDifferenceTextView = (TextView) findViewById(R.id.remainingSteps);
 
         stepsTakenTextView = (TextView) findViewById(R.id.stepCount);
-
         stepsProgress = (ProgressBar) findViewById(determinateBar);
+        speedTextView = (TextView) findViewById(R.id.speed);
 
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabGroup);
 //        fab.setOnClickListener(new View.OnClickListener() {
@@ -187,7 +188,7 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
     public void onSensorChanged(SensorEvent event) {
         Log.d("sensor", event.toString());
         stepsTakenTextView.setText(String.valueOf(event.values[0]).substring(0,String.valueOf(event.values[0]).length() - 2));
-        final String steps = stepsTakenTextView.getText().toString();
+        final String steps = (Integer.parseInt(stepsTakenTextView.getText().toString())%10000)+"";
         ServerAPI.updateScore(null, prefs.getDeviceID(), Integer.parseInt(steps), new RequestHandler<Member>() {
             @Override
             public void callback(Member result) {
@@ -222,6 +223,7 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
                 setLeaderboard(result);
                 setStepsProgress(currentSteps);
                 setStepsDifference(result, currentSteps);
+
             }
         });
     }
@@ -236,7 +238,9 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
     }
 
     void setStepsProgress(int currentSteps) {
+
         stepsProgress.setProgress(currentSteps / 100);
+        stepsTakenTextView.setText(currentSteps+"");
     }
 
     void setStepsDifference(Group group, int currentSteps) {

@@ -136,7 +136,6 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="end"
                     android:layout_weight="1"
-                    android:text="2500"
                     android:textAlignment="viewEnd"
                     android:textSize="25sp"
                     android:textStyle="bold" />
