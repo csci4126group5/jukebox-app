@@ -28,7 +28,7 @@ public class MockAPI implements APISpec {
         Random r = new Random();
         int Low = 0;
         int High = 10000;
-        for (int i = 1; i <= n; i++) {
+        for (int i = 1; i <= 9; i++) {
             if (i == n) {
                 members.add(deviceUser);
             } else {

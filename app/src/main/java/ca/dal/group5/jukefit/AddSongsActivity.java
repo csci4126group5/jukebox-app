@@ -40,6 +40,7 @@ public class AddSongsActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Snackbar.make(view, "Added Song(s)", Snackbar.LENGTH_LONG);
                 SelectedSongs = new ArrayList<String>();
                 for(SongWrapper SWRec : SongWrapperList)
                     if(SWRec.isSelected)
