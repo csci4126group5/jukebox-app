@@ -76,27 +76,129 @@ public class APIService implements APISpec {
     }
 
     @Override
-    public void joinGroup(String groupCode, String name, String deviceID, RequestHandler<Group> callback) {
-
+    public void joinGroup(String groupCode, String name, String deviceID, final RequestHandler<Group> handler) {
+        try {
+            URL url = new URL(String.format(SELECT_GROUP, groupCode));
+            Request request = new Request(RequestType.POST, url, new RequestHandler<String>() {
+                @Override
+                public void callback(String result) {
+                    if (result == null) {
+                        handler.callback(null);
+                        return;
+                    }
+                    try {
+                        handler.callback(JSONParser.parseGroup(new JSONObject(result)));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        handler.callback(null);
+                    }
+                }
+            });
+            request.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
-    public void updateScore(String groupCode, String deviceID, int newScore, RequestHandler<Member> callback) {
-
+    public void updateScore(String groupCode, String deviceID, int newScore, final RequestHandler<Member> handler) {
+        try {
+            URL url = new URL(SELECT_MEMBER);
+            Request request = new Request(RequestType.PUT, url, new RequestHandler<String>() {
+                @Override
+                public void callback(String result) {
+                    if (result == null) {
+                        handler.callback(null);
+                        return;
+                    }
+                    try {
+                        handler.callback(JSONParser.parseMember(new JSONObject(result)));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        handler.callback(null);
+                    }
+                }
+            });
+            request.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
-    public void mp3List(String deviceID, RequestHandler<List<Song>> callback) {
-
+    public void mp3List(String deviceID, final RequestHandler<List<Song>> handler) {
+        try {
+            URL url = new URL(BASE_MP3);
+            Request request = new Request(RequestType.GET, url, new RequestHandler<String>() {
+                @Override
+                public void callback(String result) {
+                    if (result == null) {
+                        handler.callback(null);
+                        return;
+                    }
+                    try {
+                        JSONArray JSONObjList = new JSONArray ();
+                        JSONObjList.put(new JSONObject(result));
+                        handler.callback(JSONParser.parseSongList(JSONObjList));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        handler.callback(null);
+                    }
+                }
+            });
+            request.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
-    public void mp3Upload(String deviceID, File songToUpload, RequestHandler<Song> callback) {
-
+    public void mp3Upload(String deviceID, File songToUpload, final RequestHandler<Song> handler) {
+        try {
+            URL url = new URL(BASE_MP3);
+            Request request = new Request(RequestType.POST, url, new RequestHandler<String>() {
+                @Override
+                public void callback(String result) {
+                    if (result == null) {
+                        handler.callback(null);
+                        return;
+                    }
+                    try {
+                        handler.callback(JSONParser.parseSong(new JSONObject(result)));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        handler.callback(null);
+                    }
+                }
+            });
+            request.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
-    public void mp3Download(String deviceID, String songName, RequestHandler<File> callback) {
-
+    public void mp3Download(String deviceID, String songName, final RequestHandler<File> handler) {
+        try {
+            URL url = new URL(SELECT_SONG);
+            Request request = new Request(RequestType.POST, url, new RequestHandler<String>() {
+                @Override
+                public void callback(String result) {
+                    if (result == null) {
+                        handler.callback(null);
+                        return;
+                    }
+                    try {
+                        handler.callback(new File(result));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        handler.callback(null);
+                    }
+                }
+            });
+            request.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

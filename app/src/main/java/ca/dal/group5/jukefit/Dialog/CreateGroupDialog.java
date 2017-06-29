@@ -41,7 +41,7 @@ public class CreateGroupDialog extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Create Group")
                 .setView(R.layout.dialog_creategroup)
-                .setPositiveButton("Join", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Create", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         EditText nickname = (EditText) ((Dialog) dialog).findViewById(R.id.groupNickname);
                         EditText username = (EditText) ((Dialog) dialog).findViewById(R.id.username);
