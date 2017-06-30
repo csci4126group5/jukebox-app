@@ -19,6 +19,5 @@ public interface APISpec {
     void updateScore(String groupCode, String deviceID, int newScore, RequestHandler<Member> callback);
     void mp3List(String deviceID, RequestHandler<List<Song>> callback);
     void mp3Upload(String deviceID, File songToUpload, RequestHandler<Song> callback);
-    void mp3Download(String deviceID, String songName, RequestHandler<File> callback);
 
 }

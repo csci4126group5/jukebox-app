@@ -75,9 +75,4 @@ public class MockAPI implements APISpec {
     public void mp3Upload(String deviceID, File songToUpload, RequestHandler<Song> handler) {
         handler.callback(new Song("SONG_NAME", "/" + deviceID + "/mp3/SONG_NAME"));
     }
-
-    @Override
-    public void mp3Download(String deviceID, String songName, RequestHandler<File> handler) {
-        handler.callback(null);
-    }
 }

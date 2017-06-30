@@ -1,6 +1,7 @@
 package ca.dal.group5.jukefit;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -10,12 +11,13 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import ca.dal.group5.jukefit.API.APIService;
 import ca.dal.group5.jukefit.API.APISpec;
-import ca.dal.group5.jukefit.API.MockAPI;
 import ca.dal.group5.jukefit.API.RequestHandler;
 import ca.dal.group5.jukefit.Dialog.CreateGroupDialog;
 import ca.dal.group5.jukefit.Dialog.JoinGroupDialog;
@@ -45,7 +47,7 @@ public class MainActivity extends AppCompatActivity
 
         context = this;
 
-        ServerAPI = new MockAPI();
+        ServerAPI = new APIService();
         prefs = new PreferencesService(this);
 
         groupListView = (ListView) findViewById(R.id.groupList);
@@ -90,7 +92,6 @@ public class MainActivity extends AppCompatActivity
 
     public void onManageSongs(View v) {
         startActivity(new Intent(context, AddSongsActivity.class));
-        finish();
     }
 
     @Override
@@ -98,6 +99,10 @@ public class MainActivity extends AppCompatActivity
         ServerAPI.joinGroup(groupCode, username, prefs.getDeviceID(), new RequestHandler<Group>() {
             @Override
             public void callback(Group joined) {
+                if (joined == null) {
+                    Toast.makeText(context, "Incorrect group code! Please try again.", Toast.LENGTH_LONG).show();
+                    return;
+                }
                 savedGroups.add(new Pair<String, Group>(nickname, joined));
                 populateListView();
             }
@@ -106,6 +111,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onGroupCreated(final String nickname, final String username) {
+        final Context context = this;
         ServerAPI.createGroup(new RequestHandler<Group>() {
             @Override
             public void callback(Group created) {

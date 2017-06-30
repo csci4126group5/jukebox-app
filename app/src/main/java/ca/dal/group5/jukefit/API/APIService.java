@@ -79,7 +79,10 @@ public class APIService implements APISpec {
     public void joinGroup(String groupCode, String name, String deviceID, final RequestHandler<Group> handler) {
         try {
             URL url = new URL(String.format(SELECT_GROUP, groupCode));
-            Request request = new Request(RequestType.POST, url, new RequestHandler<String>() {
+            JSONObject body = new JSONObject();
+            body.put("name", name);
+            body.put("device_id", deviceID);
+            Request request = new Request(RequestType.POST, url, body, new RequestHandler<String>() {
                 @Override
                 public void callback(String result) {
                     if (result == null) {
@@ -166,31 +169,6 @@ public class APIService implements APISpec {
                     try {
                         handler.callback(JSONParser.parseSong(new JSONObject(result)));
                     } catch (JSONException e) {
-                        e.printStackTrace();
-                        handler.callback(null);
-                    }
-                }
-            });
-            request.execute();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void mp3Download(String deviceID, String songName, final RequestHandler<File> handler) {
-        try {
-            URL url = new URL(SELECT_SONG);
-            Request request = new Request(RequestType.POST, url, new RequestHandler<String>() {
-                @Override
-                public void callback(String result) {
-                    if (result == null) {
-                        handler.callback(null);
-                        return;
-                    }
-                    try {
-                        handler.callback(new File(result));
-                    } catch (Exception e) {
                         e.printStackTrace();
                         handler.callback(null);
                     }
