@@ -9,6 +9,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -29,14 +30,8 @@ import ca.dal.group5.jukefit.Preferences.PreferencesService;
 
 import static ca.dal.group5.jukefit.R.id.determinateBar;
 
-
 public class PlaylistAndWorkoutActivity extends AppCompatActivity implements SensorEventListener {
 
-//    public String fullPath;
-//    File file;
-//    private File[] listFile;
-//    private String[] FilePathStrings;
-//    private String[] FileNameStrings;
     private SensorManager mSensorManager;
     private Sensor mSensor;
     private boolean isSensorPresent = false;
@@ -52,12 +47,12 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
 
     String groupCode = "<na>";
     String groupName = "<na>";
+    int stepsTaken = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_playlist_and_workout);
-        //setContentView(R.grouplistitem.activity_competition_view);
 
         groupCode = getIntent().getStringExtra("GROUP_CODE");
         groupName = getIntent().getStringExtra("GROUP_NAME");
@@ -65,7 +60,7 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
         ServerAPI = new MockAPI();
         prefs = new PreferencesService(this);
 
-        leaderboardListView = (ListView)findViewById(R.id.playerProgress);
+        leaderboardListView = (ListView) findViewById(R.id.playerProgress);
         leaderboardListView.setItemsCanFocus(false);
         leaderboardListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 
@@ -75,111 +70,17 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
         stepsProgress = (ProgressBar) findViewById(determinateBar);
         speedTextView = (TextView) findViewById(R.id.speed);
 
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabGroup);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent intent = new Intent(PlaylistAndWorkoutActivity.this, CompetitionView.class);
-//                //finish();
-//                startActivity(intent);
-//            }
-//        });
-//        FloatingActionButton fabAdd = (FloatingActionButton) findViewById(R.id.fabAdd);
-//        fabAdd.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent intent = new Intent(PlaylistAndWorkoutActivity.this, AddSongsActivity.class);
-//                finish();
-//                startActivity(intent);
-//            }
-//        });
-//        final FloatingActionButton fabStart = (FloatingActionButton) findViewById(R.id.fabStart);
-//        fabStart.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//
-//            }
-//        });
-//        ActivityCompat.requestPermissions(PlaylistAndWorkoutActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
-//        ActivityCompat.requestPermissions(PlaylistAndWorkoutActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-//
-//        if (!Environment.getExternalStorageState().equals(
-//                Environment.MEDIA_MOUNTED)) {
-//            Toast.makeText(this, "Error! No SDCARD Found!", Toast.LENGTH_LONG)
-//                    .show();
-//        } else {
-//            fullPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/JukeFit/";
-//            boolean success = true;
-//            try
-//            {
-//                file = new File(fullPath);
-//                if (!file.exists())
-//                    success = file.mkdirs();
-//                System.out.println("Full Path: "+fullPath+" :+ "+file.getAbsolutePath());
-//                if (success) {
-//                    System.out.println("Full Path: "+fullPath);
-//                    System.out.println("Success:"+file.exists()+fullPath);
-//                } else {
-//                    System.out.println("Failure:"+file.exists());
-//                }
-//            }
-//            catch (Exception e) {
-//                System.out.println( "Error: "+e.getMessage());
-//            }
-//            if(file.listFiles() != null)
-//            {
-//                listFile = file.listFiles();
-//                int len = listFile.length;
-//                System.out.println("Length:" + len);
-//            }
-//        }
-//
-//        if (file.isDirectory() && file.listFiles() != null) {
-//            listFile = file.listFiles();
-//            FilePathStrings = new String[listFile.length];
-//            FileNameStrings = new String[listFile.length];
-//
-//            for (int i = 0; i < listFile.length; i++) {
-//                System.out.println("List File Size: "+listFile[i].length());
-//                if(listFile[i].length() != 0) {
-//                    FilePathStrings[i] = listFile[i].getAbsolutePath();
-//                    FileNameStrings[i] = listFile[i].getName();
-//                    System.out.println("FilePathStrings: " + FilePathStrings[i]);
-//                    System.out.println("FileNameStrings: " + FileNameStrings[i]);
-//                    System.out.println("List File Size 2: "+listFile[i].length());
-//                }
-//            }
-//        }
-//
-//        leaderboardListView = (ListView)findViewById(R.id.SongListView);
-//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.grouplistitem.group_song_list, R.id.SongName, FileNameStrings);
-//        leaderboardListView.setAdapter(adapter);
-//        leaderboardListView.setItemsCanFocus(false);
-//        leaderboardListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-
         mSensorManager = (SensorManager) this.getSystemService(Context.SENSOR_SERVICE);
         if (mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER) != null) {
             mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
             isSensorPresent = true;
-        }
-        else
-        {
+        } else {
             isSensorPresent = false;
         }
 
-        this.setTitle(groupName);
-        updateInformation(0);
-
-        String url = "http://ubcomjukebox.x10host.com/shared/Shape%20of%20You.mp3";
-        MediaPlayer mediaPlayer = new MediaPlayer();
-        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        try {
-            mediaPlayer.setDataSource(url);
-            mediaPlayer.prepare();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        mediaPlayer.start();
+        this.setTitle(groupName + " - " + groupCode);
+        beginSyncTask();
+        playSong("http://www.bensound.com/royalty-free-music?download=cute");
     }
 
     @Override
@@ -200,15 +101,8 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        Log.d("sensor", event.toString());
-        stepsTakenTextView.setText(String.valueOf(event.values[0]).substring(0,String.valueOf(event.values[0]).length() - 2));
-        final String steps = (Integer.parseInt(stepsTakenTextView.getText().toString())%10000)+"";
-        ServerAPI.updateScore(null, prefs.getDeviceID(), Integer.parseInt(steps), new RequestHandler<Member>() {
-            @Override
-            public void callback(Member result) {
-                updateInformation(Integer.parseInt(steps));
-            }
-        });
+        stepsTakenTextView.setText(String.valueOf(event.values[0]).substring(0, String.valueOf(event.values[0]).length() - 2));
+        stepsTaken = Integer.parseInt(stepsTakenTextView.getText().toString()) % 10000;
     }
 
     @Override
@@ -230,16 +124,29 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
         }
     }
 
-    void updateInformation(final int currentSteps) {
-        ServerAPI.groupInformation(groupCode, new RequestHandler<Group>() {
-            @Override
-            public void callback(Group result) {
-                setLeaderboard(result);
-                setStepsProgress(currentSteps);
-                setStepsDifference(result, currentSteps);
+    void beginSyncTask() {
+        final Handler h = new Handler();
+        final int delay = 5000; //milliseconds
 
+        h.postDelayed(new Runnable() {
+            public void run() {
+                final Runnable runnable = this;
+                ServerAPI.updateScore(groupCode, prefs.getDeviceID(), stepsTaken, new RequestHandler<Member>() {
+                    @Override
+                    public void callback(Member result) {
+                        ServerAPI.groupInformation(groupCode, new RequestHandler<Group>() {
+                            @Override
+                            public void callback(Group result) {
+                                setLeaderboard(result);
+                                setStepsProgress(stepsTaken);
+                                setStepsDifference(result, stepsTaken);
+                                h.postDelayed(runnable, delay);
+                            }
+                        });
+                    }
+                });
             }
-        });
+        }, 0);
     }
 
     void setLeaderboard(Group group) {
@@ -252,9 +159,8 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
     }
 
     void setStepsProgress(int currentSteps) {
-
         stepsProgress.setProgress(currentSteps / 100);
-        stepsTakenTextView.setText(currentSteps+"");
+        stepsTakenTextView.setText(currentSteps + "");
     }
 
     void setStepsDifference(Group group, int currentSteps) {
@@ -263,14 +169,42 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
             scores.add(member.getScore());
         }
 
-        if(currentSteps >= (scores.get(0))) {
+        if (currentSteps >= (scores.get(0))) {
             int diff = currentSteps - scores.get(1);
-            stepsDifferenceTextView.setText("You lead by "+ diff +" steps");
+            stepsDifferenceTextView.setText("You lead by " + diff + " steps");
             stepsDifferenceTextView.setTextColor(Color.GREEN);
         } else {
-            int diff = scores.get(0) -  currentSteps;
-            stepsDifferenceTextView.setText("You trail by "+ diff + " steps");
+            int diff = scores.get(0) - currentSteps;
+            stepsDifferenceTextView.setText("You trail by " + diff + " steps");
             stepsDifferenceTextView.setTextColor(Color.RED);
+        }
+    }
+
+    void playSong(String url) {
+        Log.d("playSong", "top");
+        MediaPlayer mediaPlayer = new MediaPlayer();
+        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                Log.d("playSong", "prepared");
+//              TODO: if we join a group late, we need to skip forward
+//              TODO: we will want to try and prepare nextSong before currentSong is over
+                mp.start();
+            }
+        });
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                Log.d("playSong", "complete");
+//              TODO: when one is complete, play the next
+            }
+        });
+        try {
+            mediaPlayer.setDataSource(url);
+            mediaPlayer.prepareAsync();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
