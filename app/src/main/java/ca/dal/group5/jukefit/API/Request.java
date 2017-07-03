@@ -100,7 +100,9 @@ public class Request extends AsyncTask<Void, Void, String> {
             DataOutputStream dos = new DataOutputStream(connection.getOutputStream());
             FileInputStream fileInputStream = new FileInputStream(SongFile);
             dos.writeBytes(twoHyphens + boundary + lineEnd);
-            dos.writeBytes("Content-Disposition: form-data; name=\"file\"" + lineEnd);
+            dos.writeBytes("Content-Disposition: form-data;" +
+                    "name=\"" + "file" + "\";" +
+                    "filename=\"" + SongFile.getName() + "\"" + lineEnd);
             dos.writeBytes(lineEnd);
             int bytesRead, bytesAvailable, bufferSize;
             bytesAvailable = fileInputStream.available();

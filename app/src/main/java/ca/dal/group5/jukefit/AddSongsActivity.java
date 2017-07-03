@@ -64,8 +64,7 @@ public class AddSongsActivity extends AppCompatActivity {
                 ServerAPI.mp3Upload(prefs.getDeviceID(), SongFile, new RequestHandler<Song>() {
                     @Override
                     public void callback(Song result) {
-                        System.out.println("**********" + SongFile.getAbsolutePath());
-                        //System.out.println("**********"+result.getUrl());
+                        System.out.println("**********" + result.getUrl());
                     }
                 });
                 Intent intent = new Intent(AddSongsActivity.this, MainActivity.class);
