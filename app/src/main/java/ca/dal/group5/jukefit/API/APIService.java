@@ -23,7 +23,6 @@ public class APIService implements APISpec {
     private static final String SELECT_GROUP = BASE_GROUP + "/%s";
     private static final String SELECT_MEMBER = SELECT_GROUP + "/member/%s";
     private static final String BASE_MP3 = BASE_URL + "/%s/mp3";
-    private static final String SELECT_SONG = BASE_MP3 + "/%s";
 
     @Override
     public void createGroup(final RequestHandler<Group> handler) {
@@ -140,7 +139,7 @@ public class APIService implements APISpec {
                         return;
                     }
                     try {
-                        JSONArray JSONObjList = new JSONArray ();
+                        JSONArray JSONObjList = new JSONArray();
                         JSONObjList.put(new JSONObject(result));
                         handler.callback(JSONParser.parseSongList(JSONObjList));
                     } catch (JSONException e) {
@@ -173,7 +172,7 @@ public class APIService implements APISpec {
                         handler.callback(null);
                     }
                 }
-            },true,songToUpload);
+            }, songToUpload);
             request.execute();
         } catch (Exception e) {
             e.printStackTrace();
