@@ -44,6 +44,7 @@ public class AddSongsActivity extends AppCompatActivity {
     public List<String> SelectedSongs;
     PreferencesService prefs;
     File SongFile;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,7 +64,7 @@ public class AddSongsActivity extends AppCompatActivity {
                 ServerAPI.mp3Upload(prefs.getDeviceID(), SongFile, new RequestHandler<Song>() {
                     @Override
                     public void callback(Song result) {
-                        System.out.println("**********"+SongFile.getAbsolutePath());
+                        System.out.println("**********" + SongFile.getAbsolutePath());
                         //System.out.println("**********"+result.getUrl());
                     }
                 });
@@ -127,14 +128,13 @@ public class AddSongsActivity extends AppCompatActivity {
             listview.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         }
 
-        listview.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
+        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // TODO Auto-generated method stub
-                CheckedTextView ctv = (CheckedTextView)view;
-                SongFile = new File (listFile[position].getAbsolutePath());
+                CheckedTextView ctv = (CheckedTextView) view;
+                SongFile = new File(listFile[position].getAbsolutePath());
                 //Toast.makeText(AddSongsActivity.this, listFile[position].getAbsolutePath(), Toast.LENGTH_SHORT).show();
             }
         });

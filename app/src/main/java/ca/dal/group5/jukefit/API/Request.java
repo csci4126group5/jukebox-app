@@ -54,11 +54,11 @@ public class Request extends AsyncTask<Void, Void, String> {
         this.handler = handler;
     }
 
-    Request(RequestType method, URL url, RequestHandler<String> handler, Boolean bFile, File Song) {
+    Request(RequestType method, URL url, RequestHandler<String> handler, File Song) {
         this.method = method;
         this.url = url;
         this.handler = handler;
-        isFile = bFile;
+        isFile = true;
         SongFile = Song;
     }
 
@@ -85,84 +85,67 @@ public class Request extends AsyncTask<Void, Void, String> {
         return connection.getInputStream();
     }
 
-    private InputStream postRequest()  {
-        HttpURLConnection connection = null;
-        try {
-                connection = (HttpURLConnection)url.openConnection();
+    private InputStream postRequest() throws IOException {
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
-            connection.setRequestMethod("POST");
-            connection.setDoInput(true);
-            connection.setDoOutput(true);
-            connection.setUseCaches(false);
+        connection.setRequestMethod("POST");
+        connection.setDoInput(true);
+        connection.setDoOutput(true);
+        connection.setUseCaches(false);
 
-            if (!isFile)
-                connection.setRequestProperty("Content-Type", "application/json");
-            else if (isFile) {
-                connection.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
-                DataOutputStream dos = new DataOutputStream(connection.getOutputStream());
-                FileInputStream fileInputStream = new FileInputStream(SongFile);
-                dos.writeBytes(twoHyphens + boundary + lineEnd);
-                dos.writeBytes("Content-Disposition: form-data; name=\"uploadedfile\"" + lineEnd);
-                dos.writeBytes(lineEnd);
-                int bytesRead, bytesAvailable, bufferSize;
+        if (!isFile) {
+            connection.setRequestProperty("Content-Type", "application/json");
+        } else if (isFile) {
+            connection.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
+            DataOutputStream dos = new DataOutputStream(connection.getOutputStream());
+            FileInputStream fileInputStream = new FileInputStream(SongFile);
+            dos.writeBytes(twoHyphens + boundary + lineEnd);
+            dos.writeBytes("Content-Disposition: form-data; name=\"file\"" + lineEnd);
+            dos.writeBytes(lineEnd);
+            int bytesRead, bytesAvailable, bufferSize;
+            bytesAvailable = fileInputStream.available();
+            byte[] buffer;
+            int maxBufferSize = 1 * 1024 * 1024;
+            bufferSize = Math.min(bytesAvailable, maxBufferSize);
+            buffer = new byte[bufferSize];
+            bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+            while (bytesRead > 0) {
+                dos.write(buffer, 0, bufferSize);
                 bytesAvailable = fileInputStream.available();
-                byte[] buffer;
-                int maxBufferSize = 1 * 1024 * 1024;
                 bufferSize = Math.min(bytesAvailable, maxBufferSize);
-                buffer = new byte[bufferSize];
                 bytesRead = fileInputStream.read(buffer, 0, bufferSize);
-
-                while (bytesRead > 0) {
-
-                    dos.write(buffer, 0, bufferSize);
-                    bytesAvailable = fileInputStream.available();
-                    bufferSize = Math.min(bytesAvailable, maxBufferSize);
-                    bytesRead = fileInputStream.read(buffer, 0, bufferSize);
-
-                }
-                dos.writeBytes(lineEnd);
-                dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
-                // close streams
-                Log.e("Debug", "File is written");
-                fileInputStream.close();
-                dos.flush();
-                dos.close();
             }
-
-            if (headers != null) {
-                for (String key : headers.keySet()) {
-                    connection.addRequestProperty(key, headers.get(key));
-                }
-            }
-
-            connection.setReadTimeout(10000);
-            connection.setConnectTimeout(15000);
-            connection.connect();
-
-            if (body != null) {
-                DataOutputStream printout = new DataOutputStream(connection.getOutputStream());
-                printout.writeBytes(body.toString());
-                printout.flush();
-                printout.close();
-            }
+            dos.writeBytes(lineEnd);
+            dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
+            // close streams
+            Log.d("Debug", "File is written");
+            fileInputStream.close();
+            dos.flush();
+            dos.close();
         }
-        catch(Exception e){
-            System.out.println("************"+e.getMessage());
 
-        }
-        if(connection!=null) {
-            try {
-                return connection.getInputStream();
-            } catch (IOException e) {
-                e.printStackTrace();
+        if (headers != null) {
+            for (String key : headers.keySet()) {
+                connection.addRequestProperty(key, headers.get(key));
             }
         }
 
-            return null;
+        connection.setReadTimeout(10000);
+        connection.setConnectTimeout(15000);
+        connection.connect();
+
+        if (body != null) {
+            DataOutputStream printout = new DataOutputStream(connection.getOutputStream());
+            printout.writeBytes(body.toString());
+            printout.flush();
+            printout.close();
+        }
+
+        return connection.getInputStream();
     }
 
     private InputStream putRequest() throws IOException {
-        HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("PUT");
         connection.setDoInput(true);
         connection.setDoOutput(true);
