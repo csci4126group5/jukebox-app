@@ -158,7 +158,7 @@ public class APIService implements APISpec {
     @Override
     public void mp3Upload(String deviceID, File songToUpload, final RequestHandler<Song> handler) {
         try {
-            URL url = new URL(BASE_MP3);
+            URL url = new URL(String.format(BASE_MP3, deviceID));
             Request request = new Request(RequestType.POST, url, new RequestHandler<String>() {
                 @Override
                 public void callback(String result) {
@@ -173,7 +173,7 @@ public class APIService implements APISpec {
                         handler.callback(null);
                     }
                 }
-            });
+            },true,songToUpload);
             request.execute();
         } catch (Exception e) {
             e.printStackTrace();

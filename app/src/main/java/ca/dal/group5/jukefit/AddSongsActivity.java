@@ -1,6 +1,7 @@
 package ca.dal.group5.jukefit;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -11,25 +12,38 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.os.Environment;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.CheckedTextView;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import ca.dal.group5.jukefit.API.APIService;
+import ca.dal.group5.jukefit.API.RequestHandler;
+import ca.dal.group5.jukefit.Model.Group;
+import ca.dal.group5.jukefit.Model.Song;
+import ca.dal.group5.jukefit.Preferences.PreferencesService;
 
 public class AddSongsActivity extends AppCompatActivity {
 
+    Activity context;
     public String fullPath;
     File file;
     private File[] listFile;
     private String[] FilePathStrings;
     private String[] FileNameStrings;
     ListView listview;
-    public List<SongWrapper> SongWrapperList;
+    //public List<SongWrapper> SongWrapperList;
     public List<String> SelectedSongs;
-
+    PreferencesService prefs;
+    File SongFile;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,21 +51,26 @@ public class AddSongsActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        prefs = new PreferencesService(this);
 
-        SongWrapperList = new ArrayList<SongWrapper>();
+        //SongWrapperList = new ArrayList<SongWrapper>();
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabAddSongs);
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Added Song(s)", Snackbar.LENGTH_LONG);
-                SelectedSongs = new ArrayList<String>();
-                for (SongWrapper SWRec : SongWrapperList)
-                    if (SWRec.isSelected)
-                        SelectedSongs.add(SWRec.SongPath);
-
+                APIService ServerAPI = new APIService();
+                ServerAPI.mp3Upload(prefs.getDeviceID(), SongFile, new RequestHandler<Song>() {
+                    @Override
+                    public void callback(Song result) {
+                        System.out.println("**********"+SongFile.getAbsolutePath());
+                        //System.out.println("**********"+result.getUrl());
+                    }
+                });
                 Intent intent = new Intent(AddSongsActivity.this, MainActivity.class);
                 finish();
                 startActivity(intent);
+                Toast.makeText(AddSongsActivity.this, "Song Added!", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -100,15 +119,26 @@ public class AddSongsActivity extends AppCompatActivity {
             }
         }
         if (FilePathStrings != null) {
-            for (String SPath : FilePathStrings)
-                SongWrapperList.add(new SongWrapper(SPath));
 
             listview = (ListView) findViewById(R.id.SongListView);
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.songlistitem, R.id.SongName, FileNameStrings);
             listview.setAdapter(adapter);
-            listview.setItemsCanFocus(false);
-            listview.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+            //listview.setItemsCanFocus(false);
+            listview.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         }
+
+        listview.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // TODO Auto-generated method stub
+                CheckedTextView ctv = (CheckedTextView)view;
+                SongFile = new File (listFile[position].getAbsolutePath());
+                //Toast.makeText(AddSongsActivity.this, listFile[position].getAbsolutePath(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
     @Override
@@ -125,7 +155,7 @@ public class AddSongsActivity extends AppCompatActivity {
         }
     }
 
-    private class SongWrapper {
+    /*private class SongWrapper {
 
         String SongPath;
         Boolean isSelected;
@@ -150,5 +180,5 @@ public class AddSongsActivity extends AppCompatActivity {
         public void setSelected(Boolean selected) {
             isSelected = selected;
         }
-    }
+    }*/
 }

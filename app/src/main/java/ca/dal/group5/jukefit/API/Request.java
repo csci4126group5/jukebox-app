@@ -3,11 +3,14 @@ package ca.dal.group5.jukefit.API;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -22,6 +25,11 @@ public class Request extends AsyncTask<Void, Void, String> {
     private JSONObject body = null;
     private HashMap<String, String> headers = null;
     private RequestHandler<String> handler;
+    private Boolean isFile;
+    String lineEnd = "\r\n";
+    String twoHyphens = "--";
+    String boundary = "*****";
+    File SongFile;
 
     private ProgressDialog pDialog = null;
 
@@ -44,6 +52,14 @@ public class Request extends AsyncTask<Void, Void, String> {
         this.method = method;
         this.url = url;
         this.handler = handler;
+    }
+
+    Request(RequestType method, URL url, RequestHandler<String> handler, Boolean bFile, File Song) {
+        this.method = method;
+        this.url = url;
+        this.handler = handler;
+        isFile = bFile;
+        SongFile = Song;
     }
 
     public void setProgressDialog(Activity activity, String dialogText) {
@@ -75,7 +91,39 @@ public class Request extends AsyncTask<Void, Void, String> {
         connection.setDoInput(true);
         connection.setDoOutput(true);
         connection.setUseCaches(false);
-        connection.setRequestProperty("Content-Type", "application/json");
+        //if(!isFile)
+            connection.setRequestProperty("Content-Type", "application/json");
+        /*else if(isFile) {
+            connection.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
+            DataOutputStream dos = new DataOutputStream(connection.getOutputStream());
+            FileInputStream fileInputStream = new FileInputStream(SongFile);
+            dos.writeBytes(twoHyphens + boundary + lineEnd);
+            dos.writeBytes("Content-Disposition: form-data; name=\"uploadedfile\"" + lineEnd);
+            dos.writeBytes(lineEnd);
+            int bytesRead, bytesAvailable, bufferSize;
+            bytesAvailable = fileInputStream.available();
+            byte[] buffer;
+            int maxBufferSize = 1 * 1024 * 1024;
+            bufferSize = Math.min(bytesAvailable, maxBufferSize);
+            buffer = new byte[bufferSize];
+            bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+
+            while (bytesRead > 0) {
+
+                dos.write(buffer, 0, bufferSize);
+                bytesAvailable = fileInputStream.available();
+                bufferSize = Math.min(bytesAvailable, maxBufferSize);
+                bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+
+            }
+            dos.writeBytes(lineEnd);
+            dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
+            // close streams
+            Log.e("Debug", "File is written");
+            fileInputStream.close();
+            dos.flush();
+            dos.close();
+        }*/
 
         if (headers != null) {
             for (String key : headers.keySet()) {
