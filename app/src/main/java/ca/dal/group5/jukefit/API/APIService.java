@@ -105,8 +105,10 @@ public class APIService implements APISpec {
     @Override
     public void updateScore(String groupCode, String deviceID, int newScore, final RequestHandler<Member> handler) {
         try {
-            URL url = new URL(SELECT_MEMBER);
-            Request request = new Request(RequestType.PUT, url, new RequestHandler<String>() {
+            URL url = new URL(String.format(SELECT_MEMBER, groupCode, deviceID));
+            JSONObject body = new JSONObject();
+            body.put("score", newScore);
+            Request request = new Request(RequestType.PUT, url, body, new RequestHandler<String>() {
                 @Override
                 public void callback(String result) {
                     if (result == null) {

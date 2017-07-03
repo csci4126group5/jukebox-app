@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.widget.AdapterView;
@@ -22,6 +23,7 @@ import ca.dal.group5.jukefit.API.RequestHandler;
 import ca.dal.group5.jukefit.Dialog.CreateGroupDialog;
 import ca.dal.group5.jukefit.Dialog.JoinGroupDialog;
 import ca.dal.group5.jukefit.Model.Group;
+import ca.dal.group5.jukefit.Model.Member;
 import ca.dal.group5.jukefit.Preferences.PreferencesService;
 
 public class MainActivity extends AppCompatActivity
@@ -114,7 +116,7 @@ public class MainActivity extends AppCompatActivity
         final Context context = this;
         ServerAPI.createGroup(new RequestHandler<Group>() {
             @Override
-            public void callback(Group created) {
+            public void callback(final Group created) {
                 ServerAPI.joinGroup(created.getCode(), username, prefs.getDeviceID(), new RequestHandler<Group>() {
                     @Override
                     public void callback(Group joined) {
