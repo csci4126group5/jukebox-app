@@ -1,5 +1,7 @@
 package ca.dal.group5.jukefit.API;
 
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -62,7 +64,7 @@ public class JSONParser {
         } else {
             return new Song(
                     song.getString("url"),
-                    new Date(song.getString("end_time"))
+                    new Date(song.getLong("end_time"))
             );
         }
     }

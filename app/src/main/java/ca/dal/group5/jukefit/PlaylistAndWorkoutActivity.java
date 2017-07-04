@@ -21,11 +21,12 @@ import android.widget.TextView;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import ca.dal.group5.jukefit.API.APIService;
 import ca.dal.group5.jukefit.API.APISpec;
-import ca.dal.group5.jukefit.API.MockAPI;
 import ca.dal.group5.jukefit.API.RequestHandler;
 import ca.dal.group5.jukefit.Model.Group;
 import ca.dal.group5.jukefit.Model.Member;
+import ca.dal.group5.jukefit.Model.Song;
 import ca.dal.group5.jukefit.Preferences.PreferencesService;
 
 import static ca.dal.group5.jukefit.R.id.determinateBar;
@@ -48,6 +49,9 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
     String groupCode = "<na>";
     String groupName = "<na>";
     int stepsTaken = 0;
+    Song currentSong;
+    Song nextSong;
+    MediaPlayer player;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -57,7 +61,7 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
         groupCode = getIntent().getStringExtra("GROUP_CODE");
         groupName = getIntent().getStringExtra("GROUP_NAME");
 
-        ServerAPI = new MockAPI();
+        ServerAPI = new APIService();
         prefs = new PreferencesService(this);
 
         leaderboardListView = (ListView) findViewById(R.id.playerProgress);
@@ -70,6 +74,9 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
         stepsProgress = (ProgressBar) findViewById(determinateBar);
         speedTextView = (TextView) findViewById(R.id.speed);
 
+        currentSong = null;
+        nextSong = null;
+
         mSensorManager = (SensorManager) this.getSystemService(Context.SENSOR_SERVICE);
         if (mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER) != null) {
             mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
@@ -80,7 +87,6 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
 
         this.setTitle(groupName + " - " + groupCode);
         beginSyncTask();
-        playSong("http://www.bensound.com/royalty-free-music?download=cute");
     }
 
     @Override
@@ -140,6 +146,7 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
                                 setLeaderboard(result);
                                 setStepsProgress(stepsTaken);
                                 setStepsDifference(result, stepsTaken);
+                                updatePlaylist(result.getCurrentSong(), result.getNextSong());
                                 h.postDelayed(runnable, delay);
                             }
                         });
@@ -169,7 +176,10 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
             scores.add(member.getScore());
         }
 
-        if (currentSteps >= (scores.get(0))) {
+        if (scores.size() == 1) {
+            stepsDifferenceTextView.setText("You lead by " + currentSteps + " steps");
+            stepsDifferenceTextView.setTextColor(Color.GREEN);
+        } else if (currentSteps >= (scores.get(0))) {
             int diff = currentSteps - scores.get(1);
             stepsDifferenceTextView.setText("You lead by " + diff + " steps");
             stepsDifferenceTextView.setTextColor(Color.GREEN);
@@ -180,29 +190,37 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
         }
     }
 
-    void playSong(String url) {
-        Log.d("playSong", "top");
-        MediaPlayer mediaPlayer = new MediaPlayer();
-        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+    void updatePlaylist(Song currentSong, Song nextSong) {
+        if (this.currentSong == null || !this.currentSong.getUrl().equals(currentSong.getUrl())) {
+            playSong(currentSong);
+        }
+        this.currentSong = currentSong;
+        this.nextSong = nextSong;
+    }
+
+    void playSong(Song song) {
+        if (player != null) {
+            player.stop();
+        }
+        player = new MediaPlayer();
+        player.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        player.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer mp) {
-                Log.d("playSong", "prepared");
 //              TODO: if we join a group late, we need to skip forward
 //              TODO: we will want to try and prepare nextSong before currentSong is over
                 mp.start();
             }
         });
-        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+        player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
-                Log.d("playSong", "complete");
-//              TODO: when one is complete, play the next
+                playSong(nextSong);
             }
         });
         try {
-            mediaPlayer.setDataSource(url);
-            mediaPlayer.prepareAsync();
+            player.setDataSource(APIService.BASE_URL + song.getUrl());
+            player.prepareAsync();
         } catch (IOException e) {
             e.printStackTrace();
         }

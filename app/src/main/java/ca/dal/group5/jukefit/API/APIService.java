@@ -18,7 +18,7 @@ import ca.dal.group5.jukefit.Model.Song;
 
 public class APIService implements APISpec {
 
-    private static final String BASE_URL = "https://fitness-jukebox.herokuapp.com";
+    public static final String BASE_URL = "https://fitness-jukebox.herokuapp.com";
     private static final String BASE_GROUP = BASE_URL + "/group";
     private static final String SELECT_GROUP = BASE_GROUP + "/%s";
     private static final String SELECT_MEMBER = SELECT_GROUP + "/member/%s";
