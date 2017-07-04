@@ -158,8 +158,10 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
 
     void setLeaderboard(Group group) {
         ArrayList<String> memberInformation = new ArrayList<String>();
-        for (Member member : group.getSortedMembers()) {
-            memberInformation.add(member.getName() + "                                       " + member.getScore());
+        if(group != null) {
+            for (Member member : group.getSortedMembers()) {
+                memberInformation.add(member.getName() + "                                       " + member.getScore());
+            }
         }
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.playerlistitem, R.id.playerName, memberInformation);
         leaderboardListView.setAdapter(adapter);
