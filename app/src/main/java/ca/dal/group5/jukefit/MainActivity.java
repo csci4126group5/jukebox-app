@@ -117,13 +117,15 @@ public class MainActivity extends AppCompatActivity
         ServerAPI.createGroup(new RequestHandler<Group>() {
             @Override
             public void callback(final Group created) {
-                ServerAPI.joinGroup(created.getCode(), username, prefs.getDeviceID(), new RequestHandler<Group>() {
-                    @Override
-                    public void callback(Group joined) {
-                        savedGroups.add(new Pair<String, Group>(nickname, joined));
-                        populateListView();
-                    }
-                });
+                if (created.getCode() != null) {
+                    ServerAPI.joinGroup(created.getCode(), username, prefs.getDeviceID(), new RequestHandler<Group>() {
+                        @Override
+                        public void callback(Group joined) {
+                            savedGroups.add(new Pair<String, Group>(nickname, joined));
+                            populateListView();
+                        }
+                    });
+                }
             }
         });
     }

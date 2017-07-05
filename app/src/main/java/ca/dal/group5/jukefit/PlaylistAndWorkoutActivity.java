@@ -221,8 +221,10 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
             }
         });
         try {
-            player.setDataSource(APIService.BASE_URL + song.getUrl());
-            player.prepareAsync();
+            if(song != null) {
+                player.setDataSource(APIService.BASE_URL + song.getUrl());
+                player.prepareAsync();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
