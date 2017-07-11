@@ -13,13 +13,11 @@ public class Group {
     String code;
     List<Member> members;
     Song currentSong;
-    Song nextSong;
 
-    public Group(String code, List<Member> members, Song currentSong, Song nextSong) {
+    public Group(String code, List<Member> members, Song currentSong) {
         this.code = code;
         this.members = members;
         this.currentSong = currentSong;
-        this.nextSong = nextSong;
     }
 
     public String getCode() {
@@ -53,13 +51,5 @@ public class Group {
 
     public void setCurrentSong(Song currentSong) {
         this.currentSong = currentSong;
-    }
-
-    public Song getNextSong() {
-        return nextSong;
-    }
-
-    public void setNextSong(Song nextSong) {
-        this.nextSong = nextSong;
     }
 }

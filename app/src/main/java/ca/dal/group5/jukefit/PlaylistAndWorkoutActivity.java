@@ -50,7 +50,6 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
     String groupName = "<na>";
     int stepsTaken = 0;
     Song currentSong;
-    Song nextSong;
     MediaPlayer player;
 
     @Override
@@ -75,7 +74,6 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
         speedTextView = (TextView) findViewById(R.id.speed);
 
         currentSong = null;
-        nextSong = null;
 
         mSensorManager = (SensorManager) this.getSystemService(Context.SENSOR_SERVICE);
         if (mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER) != null) {
@@ -143,10 +141,12 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
                         ServerAPI.groupInformation(groupCode, new RequestHandler<Group>() {
                             @Override
                             public void callback(Group result) {
-                                setLeaderboard(result);
-                                setStepsProgress(stepsTaken);
-                                setStepsDifference(result, stepsTaken);
-                                updatePlaylist(result.getCurrentSong(), result.getNextSong());
+                                if (result != null) {
+                                    setLeaderboard(result);
+                                    setStepsProgress(stepsTaken);
+                                    setStepsDifference(result, stepsTaken);
+                                    updatePlaylist(result.getCurrentSong());
+                                }
                                 h.postDelayed(runnable, delay);
                             }
                         });
@@ -192,12 +192,11 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
         }
     }
 
-    void updatePlaylist(Song currentSong, Song nextSong) {
-        if (this.currentSong == null || !this.currentSong.getUrl().equals(currentSong.getUrl())) {
+    void updatePlaylist(Song currentSong) {
+        if (currentSong != null && (this.currentSong == null || !this.currentSong.getEndTime().equals(currentSong.getEndTime()))) {
             playSong(currentSong);
         }
         this.currentSong = currentSong;
-        this.nextSong = nextSong;
     }
 
     void playSong(Song song) {
@@ -210,14 +209,7 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
             @Override
             public void onPrepared(MediaPlayer mp) {
 //              TODO: if we join a group late, we need to skip forward
-//              TODO: we will want to try and prepare nextSong before currentSong is over
                 mp.start();
-            }
-        });
-        player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                playSong(nextSong);
             }
         });
         try {

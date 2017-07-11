@@ -24,8 +24,7 @@ public class JSONParser {
         return new Group(
                 group.getString("code"),
                 parseMemberList(group.getJSONArray("members")),
-                group.isNull("currentSong") ? null : parseSong(group.getJSONObject("currentSong")),
-                group.isNull("nextSong") ? null : parseSong(group.getJSONObject("nextSong"))
+                group.isNull("currentSong") ? null : parseSong(group.getJSONObject("currentSong"))
         );
     }
 

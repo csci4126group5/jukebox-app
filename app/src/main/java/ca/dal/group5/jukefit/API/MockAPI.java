@@ -41,19 +41,19 @@ public class MockAPI implements APISpec {
 
     @Override
     public void createGroup(RequestHandler<Group> handler) {
-        handler.callback(new Group("ABCD", mockMembers(0), null, null));
+        handler.callback(new Group("ABCD", mockMembers(0), null));
     }
 
     @Override
     public void groupInformation(String groupCode, RequestHandler<Group> handler) {
-        handler.callback(new Group(groupCode, mockMembers(3), new Song("/DEVICE_ID_1/mp3/SONG_NAME_1", new Date()), new Song("/DEVICE_ID_1/mp3/SONG_NAME_2", new Date())));
+        handler.callback(new Group(groupCode, mockMembers(3), new Song("/DEVICE_ID_1/mp3/SONG_NAME_1", new Date())));
     }
 
     @Override
     public void joinGroup(String groupCode, String name, String deviceID, RequestHandler<Group> handler) {
         List<Member> members = mockMembers(2);
         members.add(new Member(name, deviceID, 0));
-        handler.callback(new Group(groupCode, members, new Song("/DEVICE_ID_1/mp3/SONG_NAME_1", new Date()), new Song("/DEVICE_ID_1/mp3/SONG_NAME_2", new Date())));
+        handler.callback(new Group(groupCode, members, new Song("/DEVICE_ID_1/mp3/SONG_NAME_1", new Date())));
     }
 
     @Override
