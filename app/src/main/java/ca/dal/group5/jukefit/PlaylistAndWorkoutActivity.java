@@ -203,11 +203,12 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
         this.currentSong = currentSong;
     }
 
-    public static int getDateDiff(Date date, TimeUnit timeUnit) {
+    public static int getDateDiff(Date date, long Duration, TimeUnit timeUnit) {
         //long diffInMillies = date2.getTime() - date1.getTime();
-        long diffInMillies = date.getTime() - new Date().getTime();
+        long diffInMillies = date.getTime() - Duration;
         return (int)timeUnit.convert(diffInMillies,TimeUnit.MILLISECONDS);
     }
+    
 
     void playSong(final Song song) {
         if (player != null) {
@@ -221,9 +222,14 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
 //              TODO: if we join a group late, we need to skip forward
                 mp.start();
                 int songDuration = mp.getDuration();
-
+                Date Present = new Date();
+                System.out.println("**********Song Duration: "+songDuration+" ****End Time: "+song.getEndTime().getTime()+" *****Present: "+Present.getTime()+" End Time Date: "+song.getEndTime());
+                System.out.println("**********ET - SD: "+(getDateDiff(song.getEndTime(),songDuration,TimeUnit.MILLISECONDS)));
                 //mp.seekTo(10000);
-                mp.seekTo(songDuration - (getDateDiff(song.getEndTime(),TimeUnit.MILLISECONDS)));
+                System.out.println("**********Seek Time: "+(getDateDiff(Present, getDateDiff(song.getEndTime(),songDuration,TimeUnit.MILLISECONDS),TimeUnit.MILLISECONDS)));
+                //mp.seekTo(songDuration - (getDateDiff(song.getEndTime(),TimeUnit.MILLISECONDS)));
+                mp.seekTo(getDateDiff(Present, getDateDiff(song.getEndTime(),songDuration,TimeUnit.MILLISECONDS),TimeUnit.MILLISECONDS));
+
             }
         });
         SongTitle = (TextView) findViewById(R.id.songTitle);
