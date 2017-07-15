@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void onJoinGroup(View v) {
-       new JoinGroupDialog().show(getFragmentManager(), "joinGroup");
+        new JoinGroupDialog().show(getFragmentManager(), "joinGroup");
     }
 
     public void onManageSongs(View v) {
@@ -132,6 +132,7 @@ public class MainActivity extends AppCompatActivity
             }
         });
     }
+
     public void saveGroups() { //convert the group list to string of nickname and groupCode
         String listOfCodes = "";
         for (Pair<String, Group> groupPair : savedGroups) {
@@ -145,20 +146,19 @@ public class MainActivity extends AppCompatActivity
         if (!listOfCode.isEmpty()) {
             for (String groupPair : listOfCode.split(","))
                 if (!groupPair.isEmpty()) {
-                    final String nickname = groupPair.substring(0,groupPair.indexOf('|'));
-                    String code = groupPair.substring(groupPair.indexOf('|')+1);
+                    final String nickname = groupPair.substring(0, groupPair.indexOf('|'));
+                    String code = groupPair.substring(groupPair.indexOf('|') + 1);
                     ServerAPI.groupInformation(code, new RequestHandler<Group>() {
                         @Override
                         public void callback(Group result) {
                             if (result == null) {
-                                Toast.makeText(context, "Incorrect group code! Please try again.", Toast.LENGTH_LONG).show();
                                 return;
                             }
                             savedGroups.add(new Pair<String, Group>(nickname, result));
-                            populateListView();
                         }
                     });
                 }
+            populateListView();
         }
     }
 
