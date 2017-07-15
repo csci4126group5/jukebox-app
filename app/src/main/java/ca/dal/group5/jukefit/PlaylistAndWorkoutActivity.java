@@ -208,7 +208,7 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
         long diffInMillies = date.getTime() - Duration;
         return (int)timeUnit.convert(diffInMillies,TimeUnit.MILLISECONDS);
     }
-    
+
 
     void playSong(final Song song) {
         if (player != null) {
