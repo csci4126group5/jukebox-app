@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity
         manageSongsButton = (Button) findViewById(R.id.manageSongsBtn);
 
         savedGroups = new ArrayList<Pair<String, Group>>();
+        getGroups();//get group list from SharedPreferences
         groupsListAdapter = new ArrayAdapter<String>(this, R.layout.grouplistitem, R.id.groupName, new ArrayList<String>());
         groupListView.setAdapter(groupsListAdapter);
         groupListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -89,7 +90,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void onJoinGroup(View v) {
-       new JoinGroupDialog().show(getFragmentManager(), "joinGroup");
+        new JoinGroupDialog().show(getFragmentManager(), "joinGroup");
     }
 
     public void onManageSongs(View v) {
@@ -107,6 +108,7 @@ public class MainActivity extends AppCompatActivity
                 }
                 savedGroups.add(new Pair<String, Group>(nickname, joined));
                 populateListView();
+                saveGroups();//Save list to the SharedPreferences
             }
         });
     }
@@ -123,10 +125,42 @@ public class MainActivity extends AppCompatActivity
                         public void callback(Group joined) {
                             savedGroups.add(new Pair<String, Group>(nickname, joined));
                             populateListView();
+                            saveGroups();//Save list to the SharedPreferences
                         }
                     });
                 }
             }
         });
     }
+
+    public void saveGroups() { //convert the group list to string of nickname and groupCode
+        String listOfCodes = "";
+        for (Pair<String, Group> groupPair : savedGroups) {
+            listOfCodes += "," + groupPair.first + "|" + groupPair.second.getCode();
+        }
+        prefs.setString("listOfCode", listOfCodes);
+    }
+
+    public void getGroups() { //retrieve the list and get the group info from the APIServices
+        String listOfCode = prefs.getString("listOfCode");
+        if (!listOfCode.isEmpty()) {
+            for (String groupPair : listOfCode.split(","))
+                if (!groupPair.isEmpty()) {
+                    final String nickname = groupPair.substring(0, groupPair.indexOf('|'));
+                    String code = groupPair.substring(groupPair.indexOf('|') + 1);
+                    ServerAPI.groupInformation(code, new RequestHandler<Group>() {
+                        @Override
+                        public void callback(Group result) {
+                            if (result == null) {
+                                return;
+                            }
+                            savedGroups.add(new Pair<String, Group>(nickname, result));
+                        }
+                    });
+                }
+            populateListView();
+        }
+    }
+
+
 }

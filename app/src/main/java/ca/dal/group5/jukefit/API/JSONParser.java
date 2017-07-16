@@ -63,7 +63,7 @@ public class JSONParser {
         } else {
             return new Song(
                     song.getString("url"),
-                    new Date(song.getLong("end_time"))
+                    new Date(song.getLong("end_time") * 1000)
             );
         }
     }

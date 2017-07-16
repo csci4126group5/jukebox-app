@@ -28,5 +28,11 @@ public class PreferencesService {
             prefs_editor.commit();
         }
         return prefs.getString(DEVICE_ID, null);
+    } public void setString(String key, String value) {
+        prefs.edit().putString(key, value).apply();
+    }
+
+    public String getString(String key) {
+        return prefs.getString(key, "");
     }
 }

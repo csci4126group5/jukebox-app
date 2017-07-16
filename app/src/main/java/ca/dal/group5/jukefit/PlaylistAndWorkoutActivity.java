@@ -23,6 +23,8 @@ import android.widget.TextView;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import ca.dal.group5.jukefit.API.APIService;
 import ca.dal.group5.jukefit.API.APISpec;
@@ -44,6 +46,7 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
     TextView stepsDifferenceTextView;
     TextView stepsTakenTextView;
     TextView speedTextView;
+    TextView SongTitle;
     ProgressBar stepsProgress;
 
     APISpec ServerAPI;
@@ -87,6 +90,7 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
         }
 
         this.setTitle(groupName + " - " + groupCode);
+
         beginSyncTask();
 
         LocationManager lm= (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
@@ -206,7 +210,14 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
         this.currentSong = currentSong;
     }
 
-    void playSong(Song song) {
+    public static int getDateDiff(Date date, long Duration, TimeUnit timeUnit) {
+        //long diffInMillies = date2.getTime() - date1.getTime();
+        long diffInMillies = date.getTime() - Duration;
+        return (int)timeUnit.convert(diffInMillies,TimeUnit.MILLISECONDS);
+    }
+
+
+    void playSong(final Song song) {
         if (player != null) {
             player.stop();
         }
@@ -217,8 +228,20 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
             public void onPrepared(MediaPlayer mp) {
 //              TODO: if we join a group late, we need to skip forward
                 mp.start();
+                int songDuration = mp.getDuration();
+                Date Present = new Date();
+                System.out.println("**********Song Duration: "+songDuration+" ****End Time: "+song.getEndTime().getTime()+" *****Present: "+Present.getTime()+" End Time Date: "+song.getEndTime());
+                System.out.println("**********ET - SD: "+(getDateDiff(song.getEndTime(),songDuration,TimeUnit.MILLISECONDS)));
+                //mp.seekTo(10000);
+                System.out.println("**********Seek Time: "+(getDateDiff(Present, getDateDiff(song.getEndTime(),songDuration,TimeUnit.MILLISECONDS),TimeUnit.MILLISECONDS)));
+                //mp.seekTo(songDuration - (getDateDiff(song.getEndTime(),TimeUnit.MILLISECONDS)));
+                mp.seekTo(getDateDiff(Present, getDateDiff(song.getEndTime(),songDuration,TimeUnit.MILLISECONDS),TimeUnit.MILLISECONDS));
+
             }
         });
+        SongTitle = (TextView) findViewById(R.id.songTitle);
+        System.out.println("*******Song: "+song.getUrl().substring(song.getUrl().lastIndexOf("/"),song.getUrl().indexOf(".mp3")));
+        SongTitle.setText(song.getUrl().substring(song.getUrl().lastIndexOf("/")+1,song.getUrl().indexOf(".mp3")));
         try {
             if(song != null) {
                 player.setDataSource(APIService.BASE_URL + song.getUrl());
