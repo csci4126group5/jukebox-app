@@ -7,6 +7,9 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Handler;
@@ -31,7 +34,7 @@ import ca.dal.group5.jukefit.Preferences.PreferencesService;
 
 import static ca.dal.group5.jukefit.R.id.determinateBar;
 
-public class PlaylistAndWorkoutActivity extends AppCompatActivity implements SensorEventListener {
+public class PlaylistAndWorkoutActivity extends AppCompatActivity implements SensorEventListener,LocationListener {
 
     private SensorManager mSensorManager;
     private Sensor mSensor;
@@ -85,6 +88,10 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
 
         this.setTitle(groupName + " - " + groupCode);
         beginSyncTask();
+
+        LocationManager lm= (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,this);
+
     }
 
     @Override
@@ -220,5 +227,38 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        TextView txt= (TextView) this.findViewById(R.id.speed);
+
+        if(location==null)
+        {
+            txt.setText("0.0 m/s");
+
+        }
+        else
+        {
+            //double currSpeed= 300.00;
+            double currSpeed=location.getSpeed();
+            txt.setText(currSpeed + " m/s");
+
+        }
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
     }
 }
