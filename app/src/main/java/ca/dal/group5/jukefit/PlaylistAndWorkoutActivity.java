@@ -1,5 +1,6 @@
 package ca.dal.group5.jukefit;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -13,6 +14,7 @@ import android.location.LocationManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Handler;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -36,7 +38,7 @@ import ca.dal.group5.jukefit.Preferences.PreferencesService;
 
 import static ca.dal.group5.jukefit.R.id.determinateBar;
 
-public class PlaylistAndWorkoutActivity extends AppCompatActivity implements SensorEventListener,LocationListener {
+public class PlaylistAndWorkoutActivity extends AppCompatActivity implements SensorEventListener, LocationListener {
 
     private SensorManager mSensorManager;
     private Sensor mSensor;
@@ -91,10 +93,23 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
 
         this.setTitle(groupName + " - " + groupCode);
 
+        ActivityCompat.requestPermissions(PlaylistAndWorkoutActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        ActivityCompat.requestPermissions(PlaylistAndWorkoutActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+        LocationManager lm = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
         beginSyncTask();
 
-        LocationManager lm= (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,this);
+
 
     }
 
