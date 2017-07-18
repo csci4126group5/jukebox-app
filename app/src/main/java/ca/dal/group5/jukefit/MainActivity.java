@@ -155,10 +155,10 @@ public class MainActivity extends AppCompatActivity
                                 return;
                             }
                             savedGroups.add(new Pair<String, Group>(nickname, result));
+                            populateListView();
                         }
                     });
                 }
-            populateListView();
         }
     }
 
