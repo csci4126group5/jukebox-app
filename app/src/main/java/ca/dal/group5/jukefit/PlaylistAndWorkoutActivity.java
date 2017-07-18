@@ -212,7 +212,10 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
     }
 
     void updatePlaylist(Song currentSong) {
-        if (currentSong != null && (this.currentSong == null || !this.currentSong.getEndTime().equals(currentSong.getEndTime()))) {
+        if (currentSong == null) {
+            return;
+        }
+        if (this.currentSong == null || !this.currentSong.getEndTime().equals(currentSong.getEndTime())) {
             playSong(currentSong);
         }
         this.currentSong = currentSong;
