@@ -79,10 +79,11 @@ public class MainActivity extends AppCompatActivity
         for (Pair<String, Group> pair : savedGroups) {
             groupNames.add(pair.first);
         }
-
-        groupsListAdapter.clear();
-        groupsListAdapter.addAll(groupNames);
-        groupsListAdapter.notifyDataSetChanged();
+        if (groupsListAdapter != null) {
+            groupsListAdapter.clear();
+            groupsListAdapter.addAll(groupNames);
+            groupsListAdapter.notifyDataSetChanged();
+        }
     }
 
     public void onCreateGroup(View v) {
