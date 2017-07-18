@@ -299,4 +299,11 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
     public void onProviderDisabled(String provider) {
 
     }
+
+    @Override
+    public void onBackPressed() {
+        player.stop();
+        finish();
+        return;
+    }
 }
