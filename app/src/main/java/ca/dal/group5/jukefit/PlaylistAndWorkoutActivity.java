@@ -99,6 +99,11 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
+
+         /*
+        Speedometer implementation - requestLocationUpdates() is called when location of the user changes,
+                                     which in turn invokes onLocationChanged()
+         */
         lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
         beginSyncTask();
 
@@ -262,6 +267,11 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
             e.printStackTrace();
         }
     }
+
+
+    /*
+   Method to update speed of the user in display screen, when location changes
+    */
 
     @Override
     public void onLocationChanged(Location location) {
