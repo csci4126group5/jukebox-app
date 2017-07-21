@@ -26,6 +26,7 @@ import ca.dal.group5.jukefit.Model.Group;
 import ca.dal.group5.jukefit.Model.Member;
 import ca.dal.group5.jukefit.Preferences.PreferencesService;
 
+//Class for the view that loads and enable users to create and join groups
 public class MainActivity extends AppCompatActivity
         implements CreateGroupDialog.CreateGroupDialogListener, JoinGroupDialog.JoinGroupDialogListener {
 
@@ -42,6 +43,7 @@ public class MainActivity extends AppCompatActivity
     APISpec ServerAPI;
     PreferencesService prefs;
 
+    //On load function of the view, calls populatelistview function
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,6 +76,7 @@ public class MainActivity extends AppCompatActivity
         populateListView();
     }
 
+    //Function to populate the list view of group on load
     private void populateListView() {
         List<String> groupNames = new ArrayList<String>();
         for (Pair<String, Group> pair : savedGroups) {
@@ -98,6 +101,7 @@ public class MainActivity extends AppCompatActivity
         startActivity(new Intent(context, AddSongsActivity.class));
     }
 
+    //Enables users to join a group on checking with the groupcode
     @Override
     public void onGroupJoined(final String nickname, String groupCode, String username) {
         ServerAPI.joinGroup(groupCode, username, prefs.getDeviceID(), new RequestHandler<Group>() {
@@ -114,6 +118,7 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
+    // Function to maintain Group persistance
     @Override
     public void onGroupCreated(final String nickname, final String username) {
         final Context context = this;

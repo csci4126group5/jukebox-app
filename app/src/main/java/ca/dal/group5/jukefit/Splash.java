@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
+//Class that acts as a Splash Screen for Branding. Show the view for sometimme and load MainActivity
 public class Splash extends Activity {
 
     @Override

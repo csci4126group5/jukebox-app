@@ -15,7 +15,7 @@ import ca.dal.group5.jukefit.Model.Song;
 /**
  * Created by lockhart on 2017-06-20.
  */
-
+//API Class that calls Server by formed URL
 public class APIService implements APISpec {
 
     public static final String BASE_URL = "https://fitness-jukebox.herokuapp.com";
@@ -24,6 +24,7 @@ public class APIService implements APISpec {
     private static final String SELECT_MEMBER = SELECT_GROUP + "/member/%s";
     private static final String BASE_MP3 = BASE_URL + "/%s/mp3";
 
+    //Calling create group functionality
     @Override
     public void createGroup(final RequestHandler<Group> handler) {
         try {
@@ -49,6 +50,7 @@ public class APIService implements APISpec {
         }
     }
 
+    //Calling get group information functionality
     @Override
     public void groupInformation(String groupCode, final RequestHandler<Group> handler) {
         try {
@@ -74,6 +76,7 @@ public class APIService implements APISpec {
         }
     }
 
+    //Calling join group functionality
     @Override
     public void joinGroup(String groupCode, String name, String deviceID, final RequestHandler<Group> handler) {
         try {
@@ -102,6 +105,7 @@ public class APIService implements APISpec {
         }
     }
 
+    //Calling update score functionality
     @Override
     public void updateScore(String groupCode, String deviceID, int newScore, final RequestHandler<Member> handler) {
         try {
@@ -129,6 +133,7 @@ public class APIService implements APISpec {
         }
     }
 
+    //Calling to get next Mp3 Song functionality
     @Override
     public void mp3List(String deviceID, final RequestHandler<List<Song>> handler) {
         try {
@@ -156,6 +161,7 @@ public class APIService implements APISpec {
         }
     }
 
+    //Calling MP3 upload functionality
     @Override
     public void mp3Upload(String deviceID, File songToUpload, final RequestHandler<Song> handler) {
         try {

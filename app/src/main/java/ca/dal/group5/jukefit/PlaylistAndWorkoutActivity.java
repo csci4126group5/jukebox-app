@@ -38,6 +38,7 @@ import ca.dal.group5.jukefit.Preferences.PreferencesService;
 
 import static ca.dal.group5.jukefit.R.id.determinateBar;
 
+//Class that handles user statistics, speed, steps walked, song to be played, synchronization etc.
 public class PlaylistAndWorkoutActivity extends AppCompatActivity implements SensorEventListener, LocationListener {
 
     private SensorManager mSensorManager;
@@ -60,6 +61,7 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
     Song currentSong;
     MediaPlayer player;
 
+    //Load the leaderboard of users on create
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,7 +112,7 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
 
 
     }
-
+    // Default functions of Pedometer and Speedometer Sensor
     @Override
     protected void onResume() {
         super.onResume();
@@ -138,6 +140,7 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
 
     }
 
+    //Function to grant or deny permissions
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
@@ -145,13 +148,13 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 } else {
-                    //Toast.makeText(AddSongsActivity.this, "Permission denied to read your External storage", Toast.LENGTH_SHORT).show();
                 }
                 return;
             }
         }
     }
 
+    //Threaded execution of LeaderBoard, StepProgress, StepDifference, Playlist
     void beginSyncTask() {
         final Handler h = new Handler();
         final int delay = 5000; //milliseconds
@@ -180,6 +183,7 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
         }, 0);
     }
 
+    //Display leader board in ascending order
     void setLeaderboard(Group group) {
         ArrayList<String> memberInformation = new ArrayList<String>();
         if(group != null) {
@@ -191,11 +195,13 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
         leaderboardListView.setAdapter(adapter);
     }
 
+    //Set the steps for step progress bar
     void setStepsProgress(int currentSteps) {
         stepsProgress.setProgress(currentSteps / 100);
         stepsTakenTextView.setText(currentSteps + "");
     }
 
+    //Set the color of the stepDIfferenceTextView based on the step difference between current player and top player
     void setStepsDifference(Group group, int currentSteps) {
         ArrayList<Integer> scores = new ArrayList<Integer>();
         for (Member member : group.getSortedMembers()) {
@@ -216,6 +222,7 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
         }
     }
 
+    //Function to update playlist
     void updatePlaylist(Song currentSong) {
         if (currentSong == null) {
             return;
@@ -226,13 +233,14 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
         this.currentSong = currentSong;
     }
 
+    //Function to calculate Date difference
     public static int getDateDiff(Date date, long Duration, TimeUnit timeUnit) {
-        //long diffInMillies = date2.getTime() - date1.getTime();
         long diffInMillies = date.getTime() - Duration;
         return (int)timeUnit.convert(diffInMillies,TimeUnit.MILLISECONDS);
     }
 
 
+    //Function to playsong and set synchronization
     void playSong(final Song song) {
         if (player != null) {
             player.stop();
@@ -248,9 +256,7 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
                 Date Present = new Date();
                 System.out.println("**********Song Duration: "+songDuration+" ****End Time: "+song.getEndTime().getTime()+" *****Present: "+Present.getTime()+" End Time Date: "+song.getEndTime());
                 System.out.println("**********ET - SD: "+(getDateDiff(song.getEndTime(),songDuration,TimeUnit.MILLISECONDS)));
-                //mp.seekTo(10000);
                 System.out.println("**********Seek Time: "+(getDateDiff(Present, getDateDiff(song.getEndTime(),songDuration,TimeUnit.MILLISECONDS),TimeUnit.MILLISECONDS)));
-                //mp.seekTo(songDuration - (getDateDiff(song.getEndTime(),TimeUnit.MILLISECONDS)));
                 mp.seekTo(getDateDiff(Present, getDateDiff(song.getEndTime(),songDuration,TimeUnit.MILLISECONDS),TimeUnit.MILLISECONDS));
 
             }
@@ -273,6 +279,7 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
    Method to update speed of the user in display screen, when location changes
     */
 
+    //Default methods of GPS functionality.
     @Override
     public void onLocationChanged(Location location) {
         TextView txt= (TextView) this.findViewById(R.id.speed);
@@ -306,6 +313,7 @@ public class PlaylistAndWorkoutActivity extends AppCompatActivity implements Sen
 
     }
 
+    //Function to stop the song on exiting the view
     @Override
     public void onBackPressed() {
         player.stop();

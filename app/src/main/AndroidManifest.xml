@@ -30,7 +30,6 @@
         <activity
             android:name=".AddSongsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".Group_Playlist" />
         <activity
             android:name=".PlaylistAndWorkoutActivity"
             android:label="My Gang" />

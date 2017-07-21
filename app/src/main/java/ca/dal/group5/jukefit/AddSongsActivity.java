@@ -31,6 +31,7 @@ import ca.dal.group5.jukefit.Model.Group;
 import ca.dal.group5.jukefit.Model.Song;
 import ca.dal.group5.jukefit.Preferences.PreferencesService;
 
+//AddSongsActivity is used to add songs to the server by the players
 public class AddSongsActivity extends AppCompatActivity {
 
     Activity context;
@@ -40,11 +41,11 @@ public class AddSongsActivity extends AppCompatActivity {
     private String[] FilePathStrings;
     private String[] FileNameStrings;
     ListView listview;
-    //public List<SongWrapper> SongWrapperList;
     public List<String> SelectedSongs;
     PreferencesService prefs;
     File SongFile;
 
+    //On loading the view, fetch MP3 songs from JukeFit Folder and show them in a list view
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,8 +54,6 @@ public class AddSongsActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         prefs = new PreferencesService(this);
-
-        //SongWrapperList = new ArrayList<SongWrapper>();
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabAddSongs);
 
         fab.setOnClickListener(new View.OnClickListener() {
@@ -64,7 +63,6 @@ public class AddSongsActivity extends AppCompatActivity {
                 ServerAPI.mp3Upload(prefs.getDeviceID(), SongFile, new RequestHandler<Song>() {
                     @Override
                     public void callback(Song result) {
-                        System.out.println("**********" + result.getUrl());
                     }
                 });
                 Intent intent = new Intent(AddSongsActivity.this, MainActivity.class);
@@ -123,7 +121,6 @@ public class AddSongsActivity extends AppCompatActivity {
             listview = (ListView) findViewById(R.id.SongListView);
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.songlistitem, R.id.SongName, FileNameStrings);
             listview.setAdapter(adapter);
-            //listview.setItemsCanFocus(false);
             listview.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         }
 
@@ -131,15 +128,14 @@ public class AddSongsActivity extends AppCompatActivity {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // TODO Auto-generated method stub
                 CheckedTextView ctv = (CheckedTextView) view;
                 SongFile = new File(listFile[position].getAbsolutePath());
-                //Toast.makeText(AddSongsActivity.this, listFile[position].getAbsolutePath(), Toast.LENGTH_SHORT).show();
             }
         });
 
     }
 
+    //Grant or Deny Permissions for any requested permissions (Storage in this case)
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
@@ -147,37 +143,9 @@ public class AddSongsActivity extends AppCompatActivity {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
                 } else {
-                    //Toast.makeText(AddSongsActivity.this, "Permission denied to read your External storage", Toast.LENGTH_SHORT).show();
                 }
                 return;
             }
         }
     }
-
-    /*private class SongWrapper {
-
-        String SongPath;
-        Boolean isSelected;
-
-        SongWrapper(String SPath) {
-            SongPath = SPath;
-            isSelected = false;
-        }
-
-        public String getSongPath() {
-            return SongPath;
-        }
-
-        public void setSongPath(String songPath) {
-            SongPath = songPath;
-        }
-
-        public Boolean getSelected() {
-            return isSelected;
-        }
-
-        public void setSelected(Boolean selected) {
-            isSelected = selected;
-        }
-    }*/
 }
